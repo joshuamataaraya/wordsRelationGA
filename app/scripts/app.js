@@ -29,6 +29,10 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/textEntry', {
+        templateUrl: 'views/textEntry.html',
+        controller: 'textEntryCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
