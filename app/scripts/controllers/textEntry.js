@@ -17,4 +17,16 @@ angular.module('wordsRelationGaApp')
     $scope.insertFromText=function(){
     	alert("Hola mundo")
     }
+    $scope.analizeText=function(){
+      var text=document.getElementById("textArea").value;
+      var phrase=document.getElementById("phrase").value;
+      if(text.length!=0 && phrase.length!=0){
+        analize(text,phrase);
+        //here has to be the reference to the 3D draw page
+      }
+      else{
+        alert("Please fill up all the spaces")
+      }
+    }
+
   });
