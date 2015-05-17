@@ -21,7 +21,11 @@ angular.module('wordsRelationGaApp')
       var text=document.getElementById("textArea").value;
       var phrase=document.getElementById("phrase").value;
       if(text.length!=0 && phrase.length!=0){
-        analize(text,phrase);
+        var analize=new Analizer(text,phrase);
+        var ArrayOfWordsToAnalize=analize.selectZoneToAnalize();
+        console.log(ArrayOfWordsToAnalize);
+        var ga=new GA(ArrayOfWordsToAnalize);
+        ga.start();
         //here has to be the reference to the 3D draw page
       }
       else{
