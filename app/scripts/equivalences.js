@@ -13,7 +13,7 @@ var equivalences=Class.extend({
 		return this._BiggestNumer;
 	},
 	getSizePerElement:function(){
-		return this._BiggestNumer/this._ElementsNum;
+		return Math.floor(this._BiggestNumer/this._ElementsNum);
 	},
 	setWordsNum:function(argNum){
 		this._ElementsNum=argNum;
