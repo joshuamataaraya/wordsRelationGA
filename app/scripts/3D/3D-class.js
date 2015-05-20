@@ -1,4 +1,4 @@
-var 3D=Class.extend({
+var ThreeJS=Class.extend({
 	init:function(){
 		this.sceneWidth = window.innerWidth;
 		this.sceneHeight = window.innerHeight;
@@ -10,7 +10,7 @@ var 3D=Class.extend({
 
 	},
 	animate: function(){
-		requestAnimationFrame(animate);
+		requestAnimationFrame(this.animate);
 		this.controls.update();
 	},
 
@@ -20,20 +20,20 @@ var 3D=Class.extend({
 		document.body.appendChild(this.container);
 
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-		this.camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1e7);
-		this.camera.position.set(sceneWidth/2,sceneHeight/2,800);
+		this.camera = new THREE.PerspectiveCamera(75, this.sceneWidth / this.sceneHeight, 1, 1e7);
+		this.camera.position.set(this.sceneWidth/2,this.sceneHeight/2,800);
 		
 		this.scene = new THREE.Scene();
 
 		this.renderer = new THREE.WebGLRenderer( { antialias: false } );
 		this.renderer.setClearColor(0x888888);
 		this.renderer.setPixelRatio(window.devicePixelRatio);
-		this.renderer.setSize(sceneWidth,sceneHeight);
-		this.container.appendChild( renderer.domElement );
+		this.renderer.setSize(this.sceneWidth,this.sceneHeight);
+		this.container.appendChild( this.renderer.domElement );
 
-		this.controls = new THREE.OrbitControls(camera);
+		this.controls = new THREE.OrbitControls(this.camera);
 		this.controls.damping = 0.2;
-		this.controls.addEventListener('change', render);
+		this.controls.addEventListener('change', this.render);
 	},
 
 	//Regla de 3 para los valores x, y, z de las palabras 3D.
@@ -51,19 +51,19 @@ var 3D=Class.extend({
 	//Función que inserta una palabra, designandole la posición, tamaño y color.
 	insertWord: function(pWord, pColor){
 		this.word = pWord;
-		this.theText = word[0];
-		this.text3d = new THREE.TextGeometry(theText,{
-			size: crossMultiplication(word[1],0)/5,
+		this.theText = this.word[0];
+		this.text3d = new THREE.TextGeometry(this.theText,{
+			size: this.crossMultiplication(this.word[1],0)/5,
 			height: 15,
 			curveSegments: 15,
 			font: "helvetiker"	
 		});
 		this.material = new THREE.MeshBasicMaterial({color: pColor});
-		this.newText = new THREE.Mesh(text3d, material);
-		this.newText.position.x = crossMultiplication(word[2],1);
-		this.newText.position.y = crossMultiplication(word[1],0);
-		this.newText.position.z = crossMultiplication(word[3],2);
-		this.scene.add(newText);
+		this.newText = new THREE.Mesh(this.text3d, this.material);
+		this.newText.position.x = this.crossMultiplication(this.word[2],1);
+		this.newText.position.y = this.crossMultiplication(this.word[1],0);
+		this.newText.position.z = this.crossMultiplication(this.word[3],2);
+		this.scene.add(this.newText);
 	},
 
 	//Ciclo que va agregando las palabras de la lista a la escena.
@@ -121,7 +121,7 @@ var 3D=Class.extend({
 		['palabra',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
 		['persona',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
 		['vecino',Math.random(1,500),Math.random(1,500),Math.random(1,500)]];
-		this.create3d(wArray);
+		this.start3D(wArray);
 	}
 });
 
