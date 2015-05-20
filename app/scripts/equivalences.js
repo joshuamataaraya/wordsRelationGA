@@ -12,6 +12,9 @@ var equivalences=Class.extend({
 	getBiggestNumber:function(){
 		return this._BiggestNumer;
 	},
+	getBitsToUse:function(){
+		return this._bitsToUse;
+	},
 	getSizePerElement:function(){
 		return Math.floor(this._BiggestNumer/this._ElementsNum);
 	},

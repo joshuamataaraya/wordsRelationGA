@@ -1,7 +1,6 @@
 var element=Class.extend({
-	init:function(argID,argSegment){
+	init:function(argID){
 		this._ID=argID;
-		this._Segment=argSegment;
 		this._Distance=0;
 		this._Grade=0;
 	},

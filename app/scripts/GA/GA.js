@@ -8,8 +8,32 @@ var population=Class.extend({
 	addElements:function(argElement){
 		this._Elements.push(argElement);
 	},
+	getTopTen:function(){
+		//words = [['word', height,distance, totalDistance]];
+		var elementsBySegment=[]; //it will store the elements by word.
+		var elementIndex=0;
+		for(;elementIndex<=this._Elements.length-1;++elementIndex){
+			var elementSegment=hashRepresentation.getSegment(
+				this._Elements[elementIndex].getID())
+			if(elementsBySegment[elementSegment]!=undefined){
+				elementsBySegment[elementSegment].push(this._Elements[elementIndex]);
+			}else{
+				elementsBySegment[elementSegment]=[this._Elements[elementIndex]];
+			}
+		}
+		var topTen=[];
+		topTen.push(elementsBySegment[0]);
+		for(var wordIndex=0;wordsIndex<=elementsBySegment.length-1;++wordsIndex){
+			for(var topTenIndex=0;topTen.length-1;++topTen){
+				if(elementsBySegment[wordsIndex].length >topTen[topTenIndex].length){
+					topTen.splice(topTenIndex,0,elementsBySegment[wordsIndex]);
+					break;
+				}
+			}
+		}
+
+	},
 	setDistance:function(){
-		//sort the elements by segment
 		var elementsBySegment=[];
 		var elementIndex=0;
 		for(;elementIndex<=this._Elements.length-1;++elementIndex){
@@ -37,15 +61,8 @@ var population=Class.extend({
 				}
 			}
 		}
-		//count the similar ones
 	},
-	sortPopulationByAparitions:function(){
-		
-		//sort the elements by segment
-	},
-
 	setGrade:function(){
-		//sort the elements by segment
 		var elementsByDistance=[];
 		var elementIndex=0;
 		for(;elementIndex<=this._Elements.length-1;++elementIndex){
@@ -72,12 +89,32 @@ var population=Class.extend({
 				}
 			}
 		}
-		//count the similar ones
 	},
-	recombination:function(){
-		//change the element to string and mix the id
-		//acording to the id set the element segment, 
-			//using the 
+	getRandomElementID:function(){
+		var min=0;
+		var max=this._Elements.length-1;
+		return this._Elements[Math.floor(Math.random() * (max - min)) + min].getID();
+	},
+	crossover:function(){
+		var elementA;
+		var elementB;
+		var min=0;
+		var max=this._Elements.length;
+		var newElementsCounter=max-Math.floor(Math.random() * (max - min)) + min;
+		min=0;
+		max=equivalences.getBitsToUse();
+		var crossoverPoint;
+		for(;newElementsCounter>=0;--newElementsCounter){
+			crossoverPoint=Math.floor(Math.random() * (max - min)) + min
+			elementA=this.getRandomElementID();
+			elementB=this.getRandomElementID();
+			elementA <<= 64-crossoverPoint; //this 64 is the size of a num in javascript
+			elementA >>>=64-crossoverPoint; 
+			elementB >>>=crossoverPoint;
+			elementB <<=crossoverPoint;
+			var newElementID=Math.abs(elementA|=elementB);
+			this._Elements.push(new element(newElementID,0)); 
+		}
 	},
 	getNextGeneration:function(){
 		//set Distance-->also the highest distance of the population
@@ -85,6 +122,14 @@ var population=Class.extend({
 		//set grade-->also the highest grade of the population
 		this.setGrade();
 		//filter with fitness to reduce the population
+		var nextPopulation=[];
+		var elementIndex=0;
+		for(;elementIndex<=this._Elements.length-1;++elementIndex){
+			if (this.fitness(this._Elements[elementIndex])){
+				nextPopulation.push(this._Elements[elementIndex]);
+			}
+		}
+		this._Elements=nextPopulation;
 	},
 	getActualGeneration:function(){
 		return this._Elements;
@@ -92,12 +137,14 @@ var population=Class.extend({
 	Mutation:function(){
 		//change the ID to string, and change a random bit of it
 	},
-	fitness:function(){
-		// if(the grade of the element is higher than 70){
-		// 	return true;
-		// }else{
-		// 	return false;
-		// }
+	fitness:function(argElement){
+		var evaluation=Math.floor(argElement.getDistance()*50/this._MaxDistance);
+		evaluation=evaluation+Math.floor(argElement.getGrade()*50/this._MaxGrade);
+		if(evaluation>=50){
+			return true;
+		}else{
+			return false;
+		}
 	},
 });
 var GA=Class.extend({
@@ -112,11 +159,23 @@ var GA=Class.extend({
 		//generate n generations
 		equivalences.setWordsNum(this._ListOfWords.length);
 		this.countDifferentsWordAndFillRepresentation();
-		this.createSegmentsIDAndInitialPopulation();	
-		this._Population.getNextGeneration();
+		this.createSegmentsIDAndInitialPopulation();
+		var n=10;
+		while(n>0){
+			this._Population.getNextGeneration();
+			this._Population.crossover();
+			n--;
+		}	
+
 		return this._Population
 	},
 	reviewEnd:function(){
+
+		if(true){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	createSegmentsIDAndInitialPopulation:function(){
 		//it defines the size of the segments
@@ -134,7 +193,7 @@ var GA=Class.extend({
 			var aparitions=this._Representation[segmentIndex].getAparitions();
 			for(;aparitions>0;--aparitions){
 				var id=Math.floor(Math.random() * (max - min)) + min;
-				var elementA=new element(id,segmentIndex);
+				var elementA=new element(id);
 				this._Population.addElements(elementA);
 			}
 		}
