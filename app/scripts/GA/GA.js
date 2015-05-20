@@ -140,6 +140,16 @@ var population=Class.extend({
 	},
 	Mutation:function(){
 		//change the ID to string, and change a random bit of it
+		//toMutate is the 5% of the population.
+		var toMutate = this._Elements.length/100*95;
+		for(;toMutate>=0;toMutate--){
+			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
+			var temporalID = this._Elements[temporalElementIndex].getId();
+			var mutationPoint = 1;
+			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
+			temporalID = Math.abs(temporalID|mutationPoint);
+			this._Elements[temporalElementIndex].setID(temporalID);
+		}
 	},
 	fitness:function(argElement){
 		var evaluation=Math.floor(argElement.getDistance()*50/this._MaxDistance);
