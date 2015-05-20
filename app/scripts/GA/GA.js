@@ -144,7 +144,7 @@ var population=Class.extend({
 			var mutationPoint = 1;
 			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
 			temporalID = Math.abs(temporalID|mutationPoint);
-			var this._Elements[temporalElementIndex].setID(temporalID);
+			this._Elements[temporalElementIndex].setID(temporalID);
 		}
 	},
 	fitness:function(argElement){
