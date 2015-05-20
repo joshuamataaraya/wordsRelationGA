@@ -1,12 +1,13 @@
-var sceneWidth = window.innerWidth;
-var sceneHeight = window.innerHeight;
-var scene, camera, renderer, controls, stats, container;
+var sceneWidth = 600;
+var sceneHeight = 500;
+var scene, camera, renderer, controls, stats;
 var material, theText, text3d, newText, word;
 var maxWeight = 0;
 var maxDistance = 0;
 var maxTotalDistance = 0;
 var currentWord = 0;
 var colorList = [0xffffff,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
+
 
 function animate(){
 	requestAnimationFrame(animate);
@@ -15,8 +16,9 @@ function animate(){
 
 //Crea la escena, camara y el renderizador que se usara para la demostración en 3D.
 function prepare3D(){
-	container = document.createElement("div");
-	document.body.appendChild(container);
+	var container = document.getElementById("threejs");
+	//container = document.createElement("div");
+	//document.body.appendChild(container);
 
 	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 	camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1e7);
@@ -135,7 +137,7 @@ function create3d(wordArray){
 	render();
 }
 
-function run(){
+function test3(){
 	wArray = [
 	['casa',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
 	['perro',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
