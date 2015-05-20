@@ -4,8 +4,10 @@ var population=Class.extend({
 		this._Representation;
 		this._MaxDistance=0;
 		this._MaxGrade=0;
+		this._InitialElementsLenght=0;
 	},
 	addElements:function(argElement){
+		this._InitialElementsLenght++;
 		this._Elements.push(argElement);
 	},
 	getTopTen:function(){
@@ -23,14 +25,16 @@ var population=Class.extend({
 		}
 		var topTen=[];
 		topTen.push(elementsBySegment[0]);
-		for(var wordIndex=0;wordsIndex<=elementsBySegment.length-1;++wordsIndex){
-			for(var topTenIndex=0;topTen.length-1;++topTen){
-				if(elementsBySegment[wordsIndex].length >topTen[topTenIndex].length){
+		for(var wordsIndex=0;wordsIndex<=elementsBySegment.length-1;++wordsIndex){
+			for(var topTenIndex=0;topTenIndex<=topTen.length-1;++topTen){
+				if(elementsBySegment[wordsIndex]!=undefined && 
+					elementsBySegment[wordsIndex].length >topTen[topTenIndex].length){
 					topTen.splice(topTenIndex,0,elementsBySegment[wordsIndex]);
 					break;
 				}
 			}
 		}
+		return topTen;
 
 	},
 	setDistance:function(){
@@ -100,11 +104,11 @@ var population=Class.extend({
 		var elementB;
 		var min=0;
 		var max=this._Elements.length;
-		var newElementsCounter=max-Math.floor(Math.random() * (max - min)) + min;
+		var newElementsCounter=25;
 		min=0;
 		max=equivalences.getBitsToUse();
 		var crossoverPoint;
-		for(;newElementsCounter>=0;--newElementsCounter){
+		for(;newElementsCounter>0;--newElementsCounter){
 			crossoverPoint=Math.floor(Math.random() * (max - min)) + min
 			elementA=this.getRandomElementID();
 			elementB=this.getRandomElementID();
@@ -160,17 +164,16 @@ var GA=Class.extend({
 		equivalences.setWordsNum(this._ListOfWords.length);
 		this.countDifferentsWordAndFillRepresentation();
 		this.createSegmentsIDAndInitialPopulation();
-		var n=10;
+		var n=5;
 		while(n>0){
 			this._Population.getNextGeneration();
 			this._Population.crossover();
 			n--;
 		}	
-
+		var topTen=this._Population.getTopTen();
 		return this._Population
 	},
 	reviewEnd:function(){
-
 		if(true){
 			return true;
 		}else{
