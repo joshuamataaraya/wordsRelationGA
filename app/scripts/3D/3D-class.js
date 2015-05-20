@@ -107,20 +107,22 @@ var 3D=Class.extend({
 		this.prepareWords(wordArray);
 		this.animate();
 		this.render();
+	},
+
+	test: function(){
+		var wArray = [
+		['casa',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['perro',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['verde',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['canto',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['Josefina',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['prueba',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['nota',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['palabra',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['persona',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+		['vecino',Math.random(1,500),Math.random(1,500),Math.random(1,500)]];
+		this.create3d(wArray);
 	}
 });
 
 
-var wArray = [
-['casa',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['perro',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['verde',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['canto',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['Josefina',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['prueba',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['nota',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['palabra',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['persona',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['vecino',Math.random(1,500),Math.random(1,500),Math.random(1,500)]];
-var 3JS = new 3D();
-3JS.create3d(wArray);

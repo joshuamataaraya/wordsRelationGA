@@ -135,15 +135,17 @@ function create3d(wordArray){
 	render();
 }
 
-wArray = [
-['casa',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['perro',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['verde',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['canto',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['Josefina',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['prueba',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['nota',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['palabra',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['persona',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
-['vecino',Math.random(1,500),Math.random(1,500),Math.random(1,500)]];
-create3d(wArray);
+function run(){
+	wArray = [
+	['casa',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['perro',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['verde',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['canto',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['Josefina',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['prueba',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['nota',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['palabra',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['persona',Math.random(1,500),Math.random(1,500),Math.random(1,500)],
+	['vecino',Math.random(1,500),Math.random(1,500),Math.random(1,500)]];
+	create3d(wArray);
+}
