@@ -113,14 +113,14 @@ function getMaxValuesV2(wordArray){
 function getMaxValues(wordArray){
 	for(currentWord=0; currentWord<wordArray.length; currentWord++){
 		var tempWord = wordArray[currentWord];
-		if(tempWord[1]>maxWeight){
-			maxWeight = tempWord[1];
+		if(tempWord.getGrade()>maxWeight){
+			maxWeight = tempWord.getGrade();
 		}
-		if(tempWord[2]>maxDistance){
-			maxDistance = tempWord[2];
+		if(tempWord.getDistance()>maxDistance){
+			maxDistance = tempWord.getDistance();
 		}
-		if(tempWord[3]>maxTotalDistance){
-			maxTotalDistance = tempWord[3];
+		if(tempWord.getTotalDistance()>maxTotalDistance){
+			maxTotalDistance = tempWord.getTotalDistance();
 		}
 	}
 }
