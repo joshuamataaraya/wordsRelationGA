@@ -26,8 +26,8 @@ angular.module('wordsRelationGaApp')
         var ArrayOfAllTheText=analize.getTextArray();
         console.log(ArrayOfWordsToAnalize);
         var ga=new GA(ArrayOfWordsToAnalize,ArrayOfAllTheText);
-        ga.start();
-        test3();
+        var words = ga.start();
+        create3d(words);
         
         //here has to be the reference to the 3D draw page
       }
