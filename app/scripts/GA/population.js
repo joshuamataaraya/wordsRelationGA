@@ -126,6 +126,8 @@ var population=Class.extend({
 	},
 	getNextGeneration:function(){
 		//filter with fitness to reduce the population
+		// this.setDistance();
+		// this.setGrade();
 		this.fitness();
 		this.crossover();
 	},

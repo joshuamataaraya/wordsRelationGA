@@ -13,21 +13,14 @@ var GA=Class.extend({
 		equivalences.setWordsNum(this._ListOfWords.length);
 		this.countDifferentsWordAndFillRepresentation();
 		this.createSegmentsIDAndInitialPopulation();
-		var n=50;
-		while(n>0){
+		var generations=5;
+		while(generations>0){
 			this._Population.getNextGeneration();
-			n--;
+			generations--;
 		}	
 		var topTen=this.getTopTen();
 		topTen=this.setTotalDistance(topTen);
 		return topTen;
-	},
-	reviewEnd:function(){
-		if(true){
-			return true;
-		}else{
-			return false;
-		}
 	},
 	setTotalDistance:function(topTen){
 		var topTenIndex=0;
