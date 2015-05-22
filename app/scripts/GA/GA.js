@@ -1,172 +1,11 @@
-var population=Class.extend({
-	init:function(){
-		this._Elements=[]; //type element
-		this._Representation;
-		this._MaxDistance=0;
-		this._MaxGrade=0;
-		this._InitialElementsLenght=0;
-	},
-	addElements:function(argElement){
-		this._InitialElementsLenght++;
-		this._Elements.push(argElement);
-	},
-	getTopTen:function(){
-		//words = [['word', height,distance, totalDistance]];
-		var elementsBySegment=[]; //it will store the elements by word.
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			var elementSegment=hashRepresentation.getSegment(
-				this._Elements[elementIndex].getID())
-			if(elementsBySegment[elementSegment]!=undefined){
-				elementsBySegment[elementSegment].push(this._Elements[elementIndex]);
-			}else{
-				elementsBySegment[elementSegment]=[this._Elements[elementIndex]];
-			}
-		}
-		var topTen=[];
-		topTen.push(elementsBySegment[0]);
-		for(var wordsIndex=0;wordsIndex<=elementsBySegment.length-1;++wordsIndex){
-			for(var topTenIndex=0;topTenIndex<=topTen.length-1;++topTen){
-				if(elementsBySegment[wordsIndex]!=undefined && 
-					elementsBySegment[wordsIndex].length >topTen[topTenIndex].length){
-					topTen.splice(topTenIndex,0,elementsBySegment[wordsIndex]);
-					break;
-				}
-			}
-		}
-		return topTen;
-
-	},
-	setDistance:function(){
-		var elementsBySegment=[];
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			var elementSegment=hashRepresentation.getSegment(
-				this._Elements[elementIndex].getID())
-			if(elementsBySegment[elementSegment]!=undefined){
-				elementsBySegment[elementSegment].push(this._Elements[elementIndex]);
-			}else{
-				elementsBySegment[elementSegment]=[this._Elements[elementIndex]];
-			}
-		}
-		var segmentIndex=0;
-		var distanceTemp;
-		for (;segmentIndex<=elementsBySegment.length-1;++segmentIndex){
-			if(elementsBySegment[segmentIndex]!=undefined){
-				distanceTemp=elementsBySegment[segmentIndex].length
-				if(this._MaxDistance<distanceTemp){ //this check the max distance
-					this._MaxDistance=distanceTemp;
-				}
-				for(elementIndex=0;
-					elementIndex<=elementsBySegment[segmentIndex].length-1;
-					++elementIndex){
-					elementsBySegment[segmentIndex][elementIndex].
-					setDistance(distanceTemp);
-				}
-			}
-		}
-	},
-	setGrade:function(){
-		var elementsByDistance=[];
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			var elementDistance=this._Elements[elementIndex].getDistance()
-			if(elementsByDistance[elementDistance]!=undefined){
-				elementsByDistance[elementDistance].push(this._Elements[elementIndex]);
-			}else{
-				elementsByDistance[elementDistance]=[this._Elements[elementIndex]];
-			}
-		}
-		var distanceIndex=0;
-		var gradeTemp;
-		for (;distanceIndex<=elementsByDistance.length-1;++distanceIndex){
-			if(elementsByDistance[distanceIndex]!=undefined){
-				gradeTemp=elementsByDistance[distanceIndex].length
-				if(this._MaxGrade<gradeTemp){ //this check the max distance
-					this._MaxGrade=gradeTemp;
-				}
-				for(elementIndex=0;
-					elementIndex<=elementsByDistance[distanceIndex].length-1;
-					++elementIndex){
-					elementsByDistance[distanceIndex][elementIndex].
-					setGrade(gradeTemp);
-				}
-			}
-		}
-	},
-	getRandomElementID:function(){
-		var min=0;
-		var max=this._Elements.length-1;
-		return this._Elements[Math.floor(Math.random() * (max - min)) + min].getID();
-	},
-	crossover:function(){
-		var elementA;
-		var elementB;
-		var min=0;
-		var max=this._Elements.length;
-		var newElementsCounter=25;
-		min=0;
-		max=equivalences.getBitsToUse();
-		var crossoverPoint;
-		for(;newElementsCounter>0;--newElementsCounter){
-			crossoverPoint=Math.floor(Math.random() * (max - min)) + min
-			elementA=this.getRandomElementID();
-			elementB=this.getRandomElementID();
-			elementA <<= 64-crossoverPoint; //this 64 is the size of a num in javascript
-			elementA >>>=64-crossoverPoint; 
-			elementB >>>=crossoverPoint;
-			elementB <<=crossoverPoint;
-			var newElementID=Math.abs(elementA|=elementB);
-			this._Elements.push(new element(newElementID,0)); 
-		}
-	},
-	getNextGeneration:function(){
-		//set Distance-->also the highest distance of the population
-		this.setDistance();
-		//set grade-->also the highest grade of the population
-		this.setGrade();
-		//filter with fitness to reduce the population
-		var nextPopulation=[];
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			if (this.fitness(this._Elements[elementIndex])){
-				nextPopulation.push(this._Elements[elementIndex]);
-			}
-		}
-		this._Elements=nextPopulation;
-	},
-	getActualGeneration:function(){
-		return this._Elements;
-	},
-	Mutation:function(){
-		//change the ID to string, and change a random bit of it
-		//toMutate is the 5% of the population.
-		var toMutate = this._Elements.length/100*95;
-		for(;toMutate>=0;toMutate--){
-			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
-			var temporalID = this._Elements[temporalElementIndex].getId();
-			var mutationPoint = 1;
-			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
-			temporalID = Math.abs(temporalID|mutationPoint);
-			this._Elements[temporalElementIndex].setID(temporalID);
-		}
-	},
-	fitness:function(argElement){
-		var evaluation=Math.floor(argElement.getDistance()*50/this._MaxDistance);
-		evaluation=evaluation+Math.floor(argElement.getGrade()*50/this._MaxGrade);
-		if(evaluation>=50){
-			return true;
-		}else{
-			return false;
-		}
-	},
-});
 var GA=Class.extend({
-	init:function(argListOfWords){
+	init:function(argListOfWords,argArrayAllTheText){
 		this._ListOfWords=argListOfWords;
 		this._Population=new population();
 		this._Representation=[];
 		this._DifferentWords=0;
+		this._ListOfTheText=argArrayAllTheText;
+		this._ListOfTheText.sort();
 		//set genetic representation
 	},
 	start:function(){
@@ -174,14 +13,14 @@ var GA=Class.extend({
 		equivalences.setWordsNum(this._ListOfWords.length);
 		this.countDifferentsWordAndFillRepresentation();
 		this.createSegmentsIDAndInitialPopulation();
-		var n=5;
+		var n=50;
 		while(n>0){
 			this._Population.getNextGeneration();
-			this._Population.crossover();
 			n--;
 		}	
-		var topTen=this._Population.getTopTen();
-		return this._Population
+		var topTen=this.getTopTen();
+		topTen=this.setTotalDistance(topTen);
+		return topTen;
 	},
 	reviewEnd:function(){
 		if(true){
@@ -190,6 +29,20 @@ var GA=Class.extend({
 			return false;
 		}
 	},
+	setTotalDistance:function(topTen){
+		var topTenIndex=0;
+		var wordsIndex; 
+		for(;topTenIndex<=topTen.length-1;++topTenIndex){
+			wordsIndex=0;
+			for(;wordsIndex<=this._ListOfTheText.length-1;++wordsIndex){
+				if(topTen[topTenIndex].getWord()==this._ListOfTheText[wordsIndex]){
+					topTen[topTenIndex].incTotalDistance();
+				}
+			}
+		}
+		return topTen;
+	},
+
 	createSegmentsIDAndInitialPopulation:function(){
 		//it defines the size of the segments
 		var segmentNumber=0;
@@ -211,6 +64,10 @@ var GA=Class.extend({
 			}
 		}
 		hashRepresentation.setRepresentation(this._Representation);
+		//set Distance-->also the highest distance of the population
+		this._Population.setDistance();
+		//set grade-->also the highest grade of the population
+		this._Population.setGrade();
 	},
 	countDifferentsWordAndFillRepresentation:function(){
 		//it counts how many different words are there in the text
@@ -237,39 +94,75 @@ var GA=Class.extend({
 	  }
 	  return true;
 	},
-});
-var hashForRepresentation=Class.extend({
-	/*every element has a number id, and also a segment
-	this is a hash function that if you give to it the 
-	number, it returns the segment.
-	It depends of the segment an their ranges defined
-	on the chromosomal representation.
-	*/
-	init:function(){
-		this._RepresentationList=[];
-	},
-	setRepresentation:function(argRepresentation){
-		this._RepresentationList=argRepresentation;
-	},
-	getSegment:function(ID){
-		var solution=false;
-		var max=this._RepresentationList.length-1;
-		var min=0;
-		var index=max-min;
-		var segment=0;
-		while(!solution){
-			if(this._RepresentationList[index].getRange()[0]>ID){
-				max=index;
-				index=Math.floor(Math.random() * (max - min)) + min;
-			}else if(this._RepresentationList[index].getRange()[1]<ID){
-				min=index;
-				index=Math.floor(Math.random() * (max - min)) + min;
+	getTopTen:function(){
+		//words = [['word', height,distance, totalDistance]];
+		this._Population.setDistance();
+		this._Population.setGrade();
+		var elements=this._Population.getActualGeneration();
+		var wordsByEvaluation=[];
+		var elementsBySegment=[]; //it will store the elements by word Or by distance
+		var words=[];
+		var elementIndex=0;
+		var wordTemp;
+		var distance;
+		var grade;
+		var evaluation;
+		var maxDistance=0;
+		var maxGrade=0;
+		//sort the elements by segment
+		for(;elementIndex<=elements.length-1;++elementIndex){
+			var elementSegment=hashRepresentation.getSegment(
+				elements[elementIndex].getID())
+			if(elementsBySegment[elementSegment]!=undefined){
+				elementsBySegment[elementSegment].push(elements[elementIndex]);
 			}else{
-				segment=this._RepresentationList[index].getNumberID();
-				solution=true;
+				elementsBySegment[elementSegment]=[elements[elementIndex]];
 			}
 		}
-		return segment;
-	}
+		//create a word for each segment and find the highest distance and grade
+		var topTen=[];
+		for(elementIndex=0;elementIndex<=elementsBySegment.length-1;++elementIndex){
+			if(elementsBySegment[elementIndex]!=undefined){
+				wordTemp=new word(this._Representation[elementIndex].getWord());
+				var wordsIndex=0;
+				distance=elementsBySegment[elementIndex].length;
+				grade=0;
+				for(;wordsIndex<=elementsBySegment[elementIndex].length-1;++wordsIndex){
+					grade+=elementsBySegment[elementIndex][wordsIndex].getGrade();
+				}
+				wordTemp.setDistance(distance);
+				wordTemp.setGrade(grade);
+				//have to fix the total of aparitions
+				words.push(wordTemp);	
+				if(maxDistance<distance){
+					maxDistance=distance;
+				}
+				if(maxGrade<grade){
+					maxGrade=grade;
+				}
+			}
+		}
+		//order the words by evaluation
+		for(wordsIndex=0;wordsIndex<=words.length-1;++wordsIndex){
+			var evaluation=words[wordsIndex].getEvaluation(maxDistance,maxGrade);
+			if(wordsByEvaluation[evaluation]!=undefined){
+				wordsByEvaluation[evaluation].push(words[wordsIndex]);
+			}else{
+				wordsByEvaluation[evaluation]=[words[wordsIndex]];
+			}
+		}
+		var topTenCounter=10;
+		var evaluationIndex=wordsByEvaluation.length-1;
+		//get the top ten acording to the evaluations
+		for(;topTenCounter>0 && evaluationIndex>=0;--evaluationIndex){
+			if(wordsByEvaluation[evaluationIndex]!=undefined){
+				wordsIndex=wordsByEvaluation[evaluationIndex].length-1;
+				for(;wordsIndex>=0 && topTenCounter>0;--wordsIndex){
+					topTen.push(wordsByEvaluation[evaluationIndex][wordsIndex]);
+					topTenCounter--;	
+				}
+			}
+		}
+		return topTen;
+	},
 });
-var hashRepresentation=new hashForRepresentation(); //its a global hash table.

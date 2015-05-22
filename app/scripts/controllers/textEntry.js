@@ -23,9 +23,9 @@ angular.module('wordsRelationGaApp')
       if(text.length!=0 && phrase.length!=0){
         var analize=new Analizer(text,phrase);
         var ArrayOfWordsToAnalize=analize.selectZoneToAnalize();
+        var ArrayOfAllTheText=analize.getTextArray();
         console.log(ArrayOfWordsToAnalize);
-        origin/master
-        var ga=new GA(ArrayOfWordsToAnalize);
+        var ga=new GA(ArrayOfWordsToAnalize,ArrayOfAllTheText);
         ga.start();
         test3();
         

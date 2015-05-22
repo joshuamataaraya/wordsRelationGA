@@ -5,6 +5,9 @@ var Analizer =Class.extend({
 		this.phraseInitialPos=0;
 
 	},
+	getTextArray:function(){
+		return this.text;
+	},
 	selectZoneToAnalize:function(agrPhraseInitialPos){
 		this.cleanTextAndPhrase();
 		this.setInitialPhrasePos();
