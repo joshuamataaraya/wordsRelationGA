@@ -12,12 +12,13 @@ var hashForRepresentation=Class.extend({
 		this._RepresentationList=argRepresentation;
 	},
 	getSegment:function(ID){
+		console.log(ID);
 		var solution=false;
 		var max=this._RepresentationList.length-1;
 		var min=0;
 		var index=max-min;
 		var segment=0;
-		if(ID>65500){
+		if(ID>6450){
 			segment=this._RepresentationList[max].getNumberID();
 			solution=true; 
 		}
@@ -28,10 +29,10 @@ var hashForRepresentation=Class.extend({
 		while(!solution){
 			if(this._RepresentationList[index].getRange()[0]>ID){
 				max=index;
-				index=Math.floor(Math.random() * (max - min)) + min;
+				index=min+Math.floor((max-min)/2);
 			}else if(this._RepresentationList[index].getRange()[1]<ID){
 				min=index;
-				index=Math.floor(Math.random() * (max - min)) + min;
+				index=min+Math.floor((max-min)/2);
 			}else{
 				segment=this._RepresentationList[index].getNumberID();
 				solution=true;
