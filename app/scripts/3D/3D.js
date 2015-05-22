@@ -114,6 +114,8 @@ function render() {
 
 //Funcion que se llama para que se muestre el 3D, la entrada es la lista de las 10 palabras.
 function create3d(wordArray){	
+	container = document.getElementById('textEntry');
+	container.parentNode.removeChild(container);
 	prepare3D();
 	prepareWords(wordArray);
 	animate();
