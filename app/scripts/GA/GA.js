@@ -13,7 +13,7 @@ var GA=Class.extend({
 		equivalences.setWordsNum(this._ListOfWords.length);
 		this.countDifferentsWordAndFillRepresentation();
 		this.createSegmentsIDAndInitialPopulation();
-		var generations=5;
+		var generations=equivalences.getNumberOfGenerations();
 		while(generations>0){
 			this._Population.getNextGeneration();
 			generations--;
@@ -56,6 +56,7 @@ var GA=Class.extend({
 				this._Population.addElements(elementA);
 			}
 		}
+		this._Representation[this._Representation.length-1].setLastRangeNumber(equivalences.getBiggestNumber());
 		hashRepresentation.setRepresentation(this._Representation);
 		//set Distance-->also the highest distance of the population
 		this._Population.setDistance();
@@ -119,9 +120,13 @@ var GA=Class.extend({
 				wordTemp=new word(this._Representation[elementIndex].getWord());
 				var wordsIndex=0;
 				distance=elementsBySegment[elementIndex].length;
-				grade=0;
+				grade=elementsBySegment[elementIndex][0].getGrade();
+				//grade=0;
 				for(;wordsIndex<=elementsBySegment[elementIndex].length-1;++wordsIndex){
-					grade+=elementsBySegment[elementIndex][wordsIndex].getGrade();
+					if(grade<elementsBySegment[elementIndex][wordsIndex].getGrade()){
+						grade=elementsBySegment[elementIndex][wordsIndex].getGrade();
+					}
+					//grade+=elementsBySegment[elementIndex][wordsIndex].getGrade();
 				}
 				wordTemp.setDistance(distance);
 				wordTemp.setGrade(grade);

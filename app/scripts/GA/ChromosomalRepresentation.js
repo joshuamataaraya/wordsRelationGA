@@ -19,6 +19,9 @@ var representation=Class.extend({
 		this._Range[1]=argLastNumerInRange+(this._Aparitions*equivalences.getSizePerElement())-1;
 		return this._Range[1]+1;
 	},
+	setLastRangeNumber:function(argLastNumberOfRange){
+		this._Range[1]=argLastNumberOfRange;
+	},
 	getRange:function(){
 		return this._Range;
 	},

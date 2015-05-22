@@ -12,16 +12,11 @@ var hashForRepresentation=Class.extend({
 		this._RepresentationList=argRepresentation;
 	},
 	getSegment:function(ID){
-		console.log(ID);
 		var solution=false;
 		var max=this._RepresentationList.length-1;
 		var min=0;
 		var index=max-min;
 		var segment=0;
-		if(ID>6450){
-			segment=this._RepresentationList[max].getNumberID();
-			solution=true; 
-		}
 		if(ID<0){
 			segment=this._RepresentationList[0].getNumberID();
 			solution=true; 

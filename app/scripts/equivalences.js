@@ -6,6 +6,7 @@ var equivalences=Class.extend({
 		this._bitsToUse=16;
 		this._BiggestNumer=Math.pow(2,this._bitsToUse)-1;
 		this._FitPorcentage=60;
+		this._NumberOfGenerations=100;
 	},
 	getWordsZonePorcentage:function(){
 		return this._WordsZonePorcentage;
@@ -13,6 +14,10 @@ var equivalences=Class.extend({
 	getBiggestNumber:function(){
 		return this._BiggestNumer;
 	},
+	getNumberOfGenerations:function(){
+		return this._NumberOfGenerations;
+	},
+	
 	getBitsToUse:function(){
 		return this._bitsToUse;
 	},
