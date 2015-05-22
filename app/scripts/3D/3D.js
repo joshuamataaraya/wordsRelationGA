@@ -79,9 +79,9 @@ function insertWord(pWord, pColor){
 function insertWordbyClass(pWord, pColor){
 	word = pWord;
 	console.log(word.getGrade() + " "+ word.getDistance() + " "+ word.getTotalDistance());
-	theText = word.Word;
+	theText = word.getWord();
 	text3d = new THREE.TextGeometry(theText,{
-		size: crossMultiplication(word.getGrade(),0)/200,
+		size: crossMultiplication(word.getGrade(),0),
 		height: 5,
 		curveSegments: 15,
 		font: "helvetiker"	
