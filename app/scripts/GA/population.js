@@ -140,10 +140,10 @@ var population=Class.extend({
 		var toMutate = this._Elements.length/100*95;
 		for(;toMutate>=0;toMutate--){
 			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
-			var temporalID = this._Elements[temporalElementIndex].getId();
+			var temporalID = this._Elements[temporalElementIndex].getID();
 			var mutationPoint = 1;
 			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
-			temporalID = Math.abs(temporalID|mutationPoint);
+			temporalID = Math.floor(Math.abs(temporalID|=mutationPoint));
 			this._Elements[temporalElementIndex].setID(temporalID);
 		}
 	},

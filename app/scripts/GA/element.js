@@ -5,7 +5,7 @@ var element=Class.extend({
 		this._Grade=0;
 	},
 	setID:function(argID){
-		this._ID=argWordNum;
+		this._ID=argID;
 	},
 	setDistance:function(argDistance){
 		this._Distance=argDistance;

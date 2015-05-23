@@ -17,6 +17,7 @@ var GA=Class.extend({
 		while(generations>0){
 			this._Population.getNextGeneration();
 			generations--;
+			//this._Population.Mutation();
 		}	
 		var topTen=this.getTopTen();
 		topTen=this.setTotalDistance(topTen);
