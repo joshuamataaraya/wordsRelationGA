@@ -90,12 +90,10 @@ var GA=Class.extend({
 	  return true;
 	},
 	getTopTen:function(){
-		//words = [['word', height,distance, totalDistance]];
 		this._Population.setDistance();
 		this._Population.setGrade();
 		var elements=this._Population.getActualGeneration();
 		var wordsByEvaluation=[];
-		var elementsBySegment=[]; //it will store the elements by word Or by distance
 		var words=[];
 		var elementIndex=0;
 		var wordTemp;
@@ -104,18 +102,7 @@ var GA=Class.extend({
 		var evaluation;
 		var maxDistance=0;
 		var maxGrade=0;
-		//sort the elements by segment
-
-		for(;elementIndex<=elements.length-1;++elementIndex){
-			var elementSegment=hashRepresentation.getSegment(
-				elements[elementIndex].getID())
-			if(elementsBySegment[elementSegment]!=undefined){
-				elementsBySegment[elementSegment].push(elements[elementIndex]);
-			}else{
-				elementsBySegment[elementSegment]=[elements[elementIndex]];
-			}
-		}
-		//create a word for each segment and find the highest distance and grade
+		var elementsBySegment=hashForElements.createHash(elements,"Segment");
 		var topTen=[];
 		for(elementIndex=0;elementIndex<=elementsBySegment.length-1;++elementIndex){
 			if(elementsBySegment[elementIndex]!=undefined){
