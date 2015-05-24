@@ -1,110 +1,115 @@
+var _Controls, _Camera, _Renderer, _Scene;
 var ThreeJS=Class.extend({
 	init:function(){
-		this.sceneWidth = window.innerWidth;
-		this.sceneHeight = window.innerHeight;
-		this.maxWeight = 0;
-		this.maxDistance = 0;
-		this.maxTotalDistance = 0;
-		this.currentWord = 0;
-		this.colorList = [0xffffff,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
-
+		this._CameraFOV = 75;
+		this._CameraViewDistance = 2000;
+		this._CameraZPosition = 300;
+		this._RendererClearColor = 0xffffff;
+		this._SceneLength = 600;
+		this._HalfSceneLength = 300;
+		this._BoxDepth = 500;
+		this._HalfBoxDepth = 250;
+		this._BoxColor = 0x123456;
+		this._LightColor = 0x404040;
+		this._LightZDistance = 100;
+		this._LightIntensity = 10;
+		this._ColorList = [0x888888,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
+		this._WordList = [];
+		this._AvgWeight = (this._SceneLength-60)/9;
+		this._AvgDistance = (this._SceneLength-100)/10;
+		this._AvgTotalDistance = (500-12)/9;
+		this._CurveSegment = 15;
+		this._font = "helvetiker";
 	},
 	animate: function(){
 		requestAnimationFrame(this.animate);
-		this.controls.update();
+		_Controls.update();
 	},
 
 	//Crea la escena, camara y el renderizador que se usara para la demostración en 3D.
 	prepare3D: function(){
-		this.container = document.createElement("div");
-		document.body.appendChild(this.container);
-
-		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-		this.camera = new THREE.PerspectiveCamera(75, this.sceneWidth / this.sceneHeight, 1, 1e7);
-		this.camera.position.set(this.sceneWidth/2,this.sceneHeight/2,800);
-		
-		this.scene = new THREE.Scene();
-
-		this.renderer = new THREE.WebGLRenderer( { antialias: false } );
-		this.renderer.setClearColor(0x888888);
-		this.renderer.setPixelRatio(window.devicePixelRatio);
-		this.renderer.setSize(this.sceneWidth,this.sceneHeight);
-		this.container.appendChild( this.renderer.domElement );
-
-		this.controls = new THREE.OrbitControls(this.camera);
-		this.controls.damping = 0.2;
-		this.controls.addEventListener('change', this.render);
-	},
-
-	//Regla de 3 para los valores x, y, z de las palabras 3D.
-	crossMultiplication: function(pNumber, type){
-		switch(type){
-			case 1:
-				return ((this.sceneWidth/2)/this.maxDistance*pNumber);
-			case 2:
-				return (400/this.maxTotalDistance*pNumber);
-			default:
-				return ((this.sceneWidth/2)/this.maxWeight*pNumber);
-		}
+		this._Container = document.getElementById("threejs");
+		if (!Detector.webgl) Detector.addGetWebGLMessage();
+		_Camera = new THREE.PerspectiveCamera(this._CameraFOV, this._SceneLength / this._SceneLength, 1, this._CameraViewDistance);
+		_Camera.position.set(0,0,this._CameraZPosition);
+		_Scene = new THREE.Scene();
+		_Renderer = new THREE.WebGLRenderer({antialias: false});
+		_Renderer.setClearColor(this._RendererClearColor);
+		_Renderer.setPixelRatio(window.devicePixelRatio);
+		_Renderer.setSize(this._SceneLength,this._SceneLength);
+		this._Container.appendChild(_Renderer.domElement);
+		_Controls = new THREE.OrbitControls(_Camera);
+		_Controls.addEventListener('change', this.render);
+		var _geometry = new THREE.BoxGeometry(this._SceneLength, this._SceneLength, this._BoxDepth);
+		var _material = new THREE.MeshLambertMaterial({color: this._BoxColor, side: THREE.BackSide, vertexColors: THREE.VertexColors});
+		var _cube = new THREE.Mesh(_geometry, _material);
+		_Scene.add(_cube);
+		var _light = new THREE.PointLight(this._LightColor, this._LightIntensity, 0);
+		_light.position.set(0,0,this._LightZDistance);
+		_Scene.add(_light);
 	},
 
 	//Función que inserta una palabra, designandole la posición, tamaño y color.
 	insertWord: function(pWord, pColor){
-		this.word = pWord;
-		this.theText = this.word[0];
-		this.text3d = new THREE.TextGeometry(this.theText,{
-			size: this.crossMultiplication(this.word[1],0)/5,
-			height: 15,
-			curveSegments: 15,
-			font: "helvetiker"	
+		var _word = pWord;
+		var _theText = _word.getWord();
+		var _text3d = new THREE.TextGeometry(_theText,{
+			size: (5*_word.getGrade())+15,
+			height: _word.getGrade()+2,
+			curveSegments: this._CurveSegment,
+			font: this._font	
 		});
-		this.material = new THREE.MeshBasicMaterial({color: pColor});
-		this.newText = new THREE.Mesh(this.text3d, this.material);
-		this.newText.position.x = this.crossMultiplication(this.word[2],1);
-		this.newText.position.y = this.crossMultiplication(this.word[1],0);
-		this.newText.position.z = this.crossMultiplication(this.word[3],2);
-		this.scene.add(this.newText);
+		var _material = new THREE.MeshBasicMaterial({color: pColor});
+		var _newText = new THREE.Mesh(_text3d, _material);
+		_newText.position.x = _word.getDistance()*this._AvgDistance-this._HalfSceneLength;
+		_newText.position.y = _word.getGrade()*this._AvgWeight-this._HalfSceneLength;
+		_newText.position.z = _word.getTotalDistance()*this._AvgTotalDistance-this._HalfBoxDepth;
+		_Scene.add(_newText);
 	},
 
 	//Ciclo que va agregando las palabras de la lista a la escena.
-	addWords: function(wordArray){
-		for(this.currentWord=0; this.currentWord<wordArray.length; this.currentWord++){
-			this.insertWord(wordArray[this.currentWord],this.colorList[this.currentWord]);
+	addWords: function(){
+		for(var _currentWord=0; _currentWord<this._WordList.length; _currentWord++){
+			this.insertWord(this._WordList[_currentWord],this._ColorList[_currentWord]);
 		}
 	},
 
 	//Funcion para sacar los valores máximos de las variables 3D.
 	//Por medio de un for para palabras en el array como listas.
-	getMaxValues: function(wordArray){
-		for(this.currentWord=0; this.currentWord<wordArray.length; this.currentWord++){
-			var tempWord = wordArray[this.currentWord];
-			if(tempWord[1]>this.maxWeight){
-				this.maxWeight = tempWord[1];
-			}
-			if(tempWord[2]>this.maxDistance){
-				this.maxDistance = tempWord[2];
-			}
-			if(tempWord[3]>this.maxTotalDistance){
-				this.maxTotalDistance = tempWord[3];
-			}
+	mapValues: function(){
+		var _currentWord;
+		this._WordList.sort(function(a,b){return a.getGrade()-b.getGrade()});
+		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
+			this._WordList[_currentWord].setGrade(_currentWord);
+		}
+		this._WordList.sort(function(a,b){return a.getDistance()-b.getDistance()});
+		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
+			this._WordList[_currentWord].setDistance(_currentWord);
+		}
+		this._WordList.sort(function(a,b){return a.getTotalDistance()-b.getTotalDistance()});
+		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
+			this._WordList[_currentWord].setTotalDistance(_currentWord);
 		}
 	},
 
 	//Funcion que llama funciones para buscar los máximos de cada valor necesario y posteriormente inserta las palabras a la escena.
-	prepareWords: function(wordArray){
-		this.getMaxValues(wordArray);
-		this.addWords(wordArray);
+	prepareWords: function(){
+		this.mapValues();
+		this.addWords();
 	},
 
 	//Funcion que se llama para que se muestre el 3D.
 	render: function(){
-		this.renderer.render(this.scene, this.camera);
+		_Renderer.render(_Scene, _Camera);
 	},
 
 	//Funcion que se llama para que se muestre el 3D, la entrada es la lista de las 10 palabras.
-	start3D: function(wordArray){
+	start3D: function(pWordArray){
+		this._Container = document.getElementById('textEntry');
+		this._Container.parentNode.removeChild(this._Container);
+		this._WordList = pWordArray;
 		this.prepare3D();
-		this.prepareWords(wordArray);
+		this.prepareWords();
 		this.animate();
 		this.render();
 	},

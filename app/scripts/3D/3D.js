@@ -1,15 +1,22 @@
-var sceneWidth = 600;
-var sceneHeight = 600;
 var scene, camera, renderer, controls, stats;
 var material, theText, text3d, newText, word;
-var maxWeight = 0;
-var maxDistance = 0;
-var maxTotalDistance = 0;
+var cameraFOV = 75;
+var cameraViewDistance = 2000;
+var cameraZPosition = 300;
+var rendererClearColor = 0xffffff;
+var sceneLength = 600;
+var sceneHalfLength = 300;
+var boxDepth = 500;
+var halfBoxDepth = 250;
+var boxColor = 0x123456;
+var lightColor = 0x404040;
+var lightZDistance = 100;
+var lightIntensity = 10;
 var currentWord = 0;
 var colorList = [0x888888,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
-var wordsList;
-var avgWeight = (sceneHeight-60)/9;
-var avgDistance = (sceneWidth-100)/10;
+var wordsList = [];
+var avgWeight = (sceneLength-60)/9;
+var avgDistance = (sceneLength-100)/10;
 var avgTotalDistance = (500-12)/9;
 
 function animate(){
@@ -22,60 +29,45 @@ function prepare3D(){
 	var container = document.getElementById("threejs");
 	//Camera
 	if (!Detector.webgl) Detector.addGetWebGLMessage();
-	camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1e7);
-	camera.position.set(0,0,300);
+	camera = new THREE.PerspectiveCamera(cameraFOV, sceneLength / sceneLength, 1, cameraViewDistance);
+	camera.position.set(0,0,cameraZPosition);
 	//Scene
 	scene = new THREE.Scene();
 	//Renderer
-	renderer = new THREE.WebGLRenderer({antialias: false } );
-	renderer.setClearColor(0xffffff);
+	renderer = new THREE.WebGLRenderer({antialias: false});
+	renderer.setClearColor(rendererClearColor);
 	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(sceneWidth,sceneHeight);
-	container.appendChild( renderer.domElement );
+	renderer.setSize(sceneLength,sceneLength);
+	container.appendChild(renderer.domElement);
 	//Controls
 	controls = new THREE.OrbitControls(camera);
 	controls.addEventListener('change', render);
 	//Cube
-	var geometry = new THREE.BoxGeometry(sceneWidth, sceneHeight, 500);
-	material = new THREE.MeshLambertMaterial( { color: 0x123456, side: THREE.BackSide, vertexColors: THREE.VertexColors } );
+	var geometry = new THREE.BoxGeometry(sceneLength, sceneLength, boxDepth);
+	material = new THREE.MeshLambertMaterial( { color: boxColor, side: THREE.BackSide, vertexColors: THREE.VertexColors } );
 	var cube = new THREE.Mesh( geometry, material );
-	cube.position.set(0,0,0);
 	scene.add( cube );
 	//light
-	var light = new THREE.PointLight( 0x404040, 10, 0);
-	light.position.set(0,0,100);
-	scene.add( light );
+	var light = new THREE.PointLight(lightColor, lightIntensity, 0);
+	light.position.set(0,0,lightZDistance);
+	scene.add(light);
 }
-
-//Regla de 3 para los valores x, y, z de las palabras 3D.
-/*function crossMultiplication(pNumber, type){
-	switch(type){
-		case 1:
-			return ((sceneWidth/2)/maxDistance*pNumber);
-		case 2:
-			return (200/maxTotalDistance*pNumber);
-		default:
-			return ((sceneWidth/2)/maxWeight*pNumber);
-	}
-}*/
 
 //Función que inserta una palabra, designandole la posición, tamaño y color.
 function insertWord(pWord, pColor){
 	word = pWord;
-	console.log( word.getGrade() + " "+word.getDistance()+" "+word.getTotalDistance());
-	console.log(((5*word.getGrade())+15)+" "+(word.getDistance()*avgDistance)+" "+(word.getTotalDistance()*avgTotalDistance-250));
 	theText = word.getWord();
 	text3d = new THREE.TextGeometry(theText,{
-		size: (5*word.getGrade())+15,//crossMultiplication(word.getGrade(),0)/(sceneWidth/100),
+		size: (5*word.getGrade())+15,
 		height: word.getGrade()+2,
 		curveSegments: 15,
 		font: "helvetiker"	
 	});
 	material = new THREE.MeshBasicMaterial({color: pColor});
 	newText = new THREE.Mesh(text3d, material);
-	newText.position.x = word.getDistance()*avgDistance-sceneWidth/2;//crossMultiplication(word.getDistance(),1)-sceneWidth/2;
-	newText.position.y = word.getGrade()*avgWeight-sceneHeight/2; //crossMultiplication(word.getGrade(),0)-sceneHeight/2;
-	newText.position.z = word.getTotalDistance()*avgTotalDistance-250; //crossMultiplication(word.getTotalDistance(),2);
+	newText.position.x = word.getDistance()*avgDistance-sceneHalfLength;
+	newText.position.y = word.getGrade()*avgWeight-sceneHalfLength;
+	newText.position.z = word.getTotalDistance()*avgTotalDistance-halfBoxDepth;
 	scene.add(newText);
 }
 
@@ -115,7 +107,6 @@ function render() {
 
 //Funcion que se llama para que se muestre el 3D, la entrada es la lista de las 10 palabras.
 function create3d(wordArray){
-	console.log(avgWeight+" "+avgDistance+" "+avgTotalDistance);
 	container = document.getElementById('textEntry');
 	container.parentNode.removeChild(container);
 	wordList = wordArray
