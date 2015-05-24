@@ -11,19 +11,28 @@ var population=Class.extend({
 		this._Elements.push(argElement);
 	},
 	setDistance:function(){
-		var elementsBySegment=[];
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			var elementSegment=hashRepresentation.getSegment(
-				this._Elements[elementIndex].getID());
-			if(elementsBySegment[elementSegment]!=undefined){
-				elementsBySegment[elementSegment].push(this._Elements[elementIndex]);
-			}else{
-				elementsBySegment[elementSegment]=[this._Elements[elementIndex]];
-			}
-		}
+		var elementsBySegment=hashForElements.createHash(this._Elements,"Segment");
+		//var elementIndex=0;
+		/*
+			In this for it creates a hash table for the segments
+				Segment -> list of elements in this segment
+		*/
+
+		// for(;elementIndex<=this._Elements.length-1;++elementIndex){
+		// 	var elementSegment=hashRepresentation.getSegment(
+		// 		this._Elements[elementIndex].getID());
+		// 	if(elementsBySegment[elementSegment]!=undefined){
+		// 		elementsBySegment[elementSegment].push(this._Elements[elementIndex]);
+		// 	}else{
+		// 		elementsBySegment[elementSegment]=[this._Elements[elementIndex]];
+		// 	}
+		// }
 		var segmentIndex=0;
 		var distanceTemp;
+		/*
+			for every element in the same segments, it sets the distance, that is 
+			the size of the list that in the hash table for the segment.
+		*/
 		for (;segmentIndex<=elementsBySegment.length-1;++segmentIndex){
 			if(elementsBySegment[segmentIndex]!=undefined){
 				distanceTemp=elementsBySegment[segmentIndex].length;
@@ -39,16 +48,16 @@ var population=Class.extend({
 		}
 	},
 	setGrade:function(){
-		var elementsByDistance=[];
-		var elementIndex=0;
-		for(;elementIndex<=this._Elements.length-1;++elementIndex){
-			var elementDistance=this._Elements[elementIndex].getDistance();
-			if(elementsByDistance[elementDistance]!=undefined){
-				elementsByDistance[elementDistance].push(this._Elements[elementIndex]);
-			}else{
-				elementsByDistance[elementDistance]=[this._Elements[elementIndex]];
-			}
-		}
+		var elementsByDistance=hashForElements.createHash(this._Elements,"Distance");;
+		// var elementIndex=0;
+		// for(;elementIndex<=this._Elements.length-1;++elementIndex){
+		// 	var elementDistance=this._Elements[elementIndex].getDistance();
+		// 	if(elementsByDistance[elementDistance]!=undefined){
+		// 		elementsByDistance[elementDistance].push(this._Elements[elementIndex]);
+		// 	}else{
+		// 		elementsByDistance[elementDistance]=[this._Elements[elementIndex]];
+		// 	}
+		// }
 		var distanceIndex=0;
 		var gradeTemp;
 		for (;distanceIndex<=elementsByDistance.length-1;++distanceIndex){

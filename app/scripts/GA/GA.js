@@ -105,6 +105,7 @@ var GA=Class.extend({
 		var maxDistance=0;
 		var maxGrade=0;
 		//sort the elements by segment
+
 		for(;elementIndex<=elements.length-1;++elementIndex){
 			var elementSegment=hashRepresentation.getSegment(
 				elements[elementIndex].getID())
@@ -142,25 +143,13 @@ var GA=Class.extend({
 			}
 		}
 		//order the words by evaluation
-		for(wordsIndex=0;wordsIndex<=words.length-1;++wordsIndex){
-			var evaluation=words[wordsIndex].getEvaluation(maxDistance,maxGrade);
-			if(wordsByEvaluation[evaluation]!=undefined){
-				wordsByEvaluation[evaluation].push(words[wordsIndex]);
-			}else{
-				wordsByEvaluation[evaluation]=[words[wordsIndex]];
-			}
-		}
+		words.sort(function(a,b){
+			return b.getEvaluation(maxDistance,maxGrade)-a.getEvaluation(maxDistance,maxGrade);
+		});
 		var topTenCounter=10;
-		var evaluationIndex=wordsByEvaluation.length-1;
-		//get the top ten acording to the evaluations
-		for(;topTenCounter>0 && evaluationIndex>=0;--evaluationIndex){
-			if(wordsByEvaluation[evaluationIndex]!=undefined){
-				wordsIndex=wordsByEvaluation[evaluationIndex].length-1;
-				for(;wordsIndex>=0 && topTenCounter>0;--wordsIndex){
-					topTen.push(wordsByEvaluation[evaluationIndex][wordsIndex]);
-					topTenCounter--;	
-				}
-			}
+		var wordsIndex=0;
+		for(;topTenCounter>0;--topTenCounter,++wordsIndex){
+			topTen.push(words[wordsIndex])
 		}
 		return topTen;
 	},
