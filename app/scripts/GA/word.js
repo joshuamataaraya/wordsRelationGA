@@ -8,6 +8,9 @@ var word=Class.extend({
 	incTotalDistance:function(){
 		this._TotalDistance=this._TotalDistance+1;
 	},
+	setTotalDistance:function(argTotalDistance){
+		this._TotalDistance = argTotalDistance;
+	},
 	getTotalDistance:function(){
 		return this._TotalDistance;
 	},
