@@ -15,11 +15,16 @@ var ThreeJS=Class.extend({
 		this._LightIntensity = 10;
 		this._ColorList = [0x888888,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
 		this._WordList = [];
-		this._AvgWeight = (this._SceneLength-60)/9;
-		this._AvgDistance = (this._SceneLength-100)/10;
-		this._AvgTotalDistance = (500-12)/9;
+		this._AvgWeight = (this._SceneLength)/9;
+		this._AvgDistance = (this._SceneLength)/9;
+		this._AvgTotalDistance = (500)/9;
 		this._CurveSegment = 15;
-		this._font = "helvetiker";
+		this._Font = "helvetiker";
+		this._3dContainer = "threejs";
+		this._TextEntry = "textEntry";
+		this._SizeMultiplier = 5;
+		this._BaseSize = 15;
+		this._BaseHeight = 2;
 	},
 	animate: function(){
 		requestAnimationFrame(this.animate);
@@ -28,7 +33,7 @@ var ThreeJS=Class.extend({
 
 	//Crea la escena, camara y el renderizador que se usara para la demostración en 3D.
 	prepare3D: function(){
-		this._Container = document.getElementById("threejs");
+		this._Container = document.getElementById(this._3dContainer);
 		if (!Detector.webgl) Detector.addGetWebGLMessage();
 		_Camera = new THREE.PerspectiveCamera(this._CameraFOV, this._SceneLength / this._SceneLength, 1, this._CameraViewDistance);
 		_Camera.position.set(0,0,this._CameraZPosition);
@@ -54,16 +59,27 @@ var ThreeJS=Class.extend({
 		var _word = pWord;
 		var _theText = _word.getWord();
 		var _text3d = new THREE.TextGeometry(_theText,{
-			size: (5*_word.getGrade())+15,
-			height: _word.getGrade()+2,
+			size: (this._SizeMultiplier*_word.getGrade())+this._BaseSize,
+			height: _word.getGrade()+this._BaseHeight,
 			curveSegments: this._CurveSegment,
-			font: this._font	
+			font: this._Font	
 		});
 		var _material = new THREE.MeshBasicMaterial({color: pColor});
 		var _newText = new THREE.Mesh(_text3d, _material);
 		_newText.position.x = _word.getDistance()*this._AvgDistance-this._HalfSceneLength;
 		_newText.position.y = _word.getGrade()*this._AvgWeight-this._HalfSceneLength;
 		_newText.position.z = _word.getTotalDistance()*this._AvgTotalDistance-this._HalfBoxDepth;
+		var _boundingVector = new THREE.Box3().setFromObject(_newText);
+		var _boundingArray = _boundingVector.max.toArray();
+		if(_boundingArray[0]>this._HalfSceneLength){
+			_newText.position.x-= (_boundingArray[0]-this._HalfSceneLength);
+		}
+		if(_boundingArray[1]>this._HalfSceneLength){
+			_newText.position.y -= (_boundingArray[1]-this._HalfSceneLength);
+		}
+		if(_boundingArray[2]>this._HalfBoxDepth){
+			_newText.position.z -= (_boundingArray[2]-this._HalfBoxDepth);
+		}
 		_Scene.add(_newText);
 	},
 
@@ -78,10 +94,6 @@ var ThreeJS=Class.extend({
 	//Por medio de un for para palabras en el array como listas.
 	mapValues: function(){
 		var _currentWord;
-		this._WordList.sort(function(a,b){return a.getGrade()-b.getGrade()});
-		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
-			this._WordList[_currentWord].setGrade(_currentWord);
-		}
 		this._WordList.sort(function(a,b){return a.getDistance()-b.getDistance()});
 		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
 			this._WordList[_currentWord].setDistance(_currentWord);
@@ -89,6 +101,10 @@ var ThreeJS=Class.extend({
 		this._WordList.sort(function(a,b){return a.getTotalDistance()-b.getTotalDistance()});
 		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
 			this._WordList[_currentWord].setTotalDistance(_currentWord);
+		}
+		this._WordList.sort(function(a,b){return a.getGrade()-b.getGrade()});
+		for(_currentWord=0; _currentWord<this._WordList.length; _currentWord++){
+			this._WordList[_currentWord].setGrade(_currentWord);
 		}
 	},
 
@@ -105,7 +121,7 @@ var ThreeJS=Class.extend({
 
 	//Funcion que se llama para que se muestre el 3D, la entrada es la lista de las 10 palabras.
 	start3D: function(pWordArray){
-		this._Container = document.getElementById('textEntry');
+		this._Container = document.getElementById(this._TextEntry);
 		this._Container.parentNode.removeChild(this._Container);
 		this._WordList = pWordArray;
 		this.prepare3D();
