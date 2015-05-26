@@ -40,7 +40,7 @@ var Analizer =Class.extend({
 		}
 	},
 	changeToArray:function(argText){
-		return argText.split(/[\s,,,.,\n,?,¿,:,...,-,(,),;,�,-,","]+/);
+		return argText.split(/[\s,,,.,\n,?,¿,:,...,-,(,),;,�,","]+/);
 	},
 	cleanTwoLettersWords:function(argWordsArray){
 		var indexWordsArray=0;

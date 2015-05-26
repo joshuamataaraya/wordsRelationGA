@@ -27,7 +27,6 @@ var ThreeJS=Class.extend({
 		this._BaseHeight = 2;
 	},
 	animate: function(){
-		requestAnimationFrame(this.animate);
 		_Controls.update();
 	},
 

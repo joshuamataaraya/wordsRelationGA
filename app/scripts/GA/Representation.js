@@ -1,6 +1,6 @@
-var representation=Class.extend({
-	init:function(argWord){
-		this._Word=argWord;
+var Representation=Class.extend({
+	init:function(){
+		this._Word="";
 		this._Aparitions=1;
 		this._NumberID=0;
 		this._Range=[];

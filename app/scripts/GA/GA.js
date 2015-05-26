@@ -1,143 +1,123 @@
 var GA=Class.extend({
-	init:function(argListOfWords,argArrayAllTheText){
-		this._ListOfWords=argListOfWords;
+	init:function(argRepresentation){
+		this._Representation=argRepresentation;
 		this._Population=new population();
-		this._Representation=[];
-		this._DifferentWords=0;
-		this._ListOfTheText=argArrayAllTheText;
-		this._ListOfTheText.sort();
+		this._Population.setDistance();
+		this._Population.setGrade();
+		this._MaxDistance=0;
+		this._MaxGrade=0;
 		//set genetic representation
 	},
 	start:function(){
 		//generate n generations
-		equivalences.setWordsNum(this._ListOfWords.length);
-		this.countDifferentsWordAndFillRepresentation();
-		this.createSegmentsIDAndInitialPopulation();
+		this._Population.initializePopulation(this._Representation);
 		var generations=equivalences.getNumberOfGenerations();
 		while(generations>0){
-			this._Population.getNextGeneration();
+			this.getNextGeneration();
 			generations--;
 			//this._Population.Mutation();
 		}	
-		var topTen=this.getTopTen();
-		topTen=this.setTotalDistance(topTen);
-		return topTen;
-	},
-	setTotalDistance:function(topTen){
-		var topTenIndex=0;
-		var wordsIndex; 
-		for(;topTenIndex<=topTen.length-1;++topTenIndex){
-			wordsIndex=0;
-			for(;wordsIndex<=this._ListOfTheText.length-1;++wordsIndex){
-				if(topTen[topTenIndex].getWord()==this._ListOfTheText[wordsIndex]){
-					topTen[topTenIndex].incTotalDistance();
-				}
-			}
-		}
-		return topTen;
-	},
-
-	createSegmentsIDAndInitialPopulation:function(){
-		//it defines the size of the segments
-		var segmentNumber=0;
-		var lastRangeNumber=0;
-		var segmentIndex=0;
-		for(;segmentIndex<this._Representation.length;++segmentIndex){
-			var min=lastRangeNumber;
-			lastRangeNumber=this._Representation[segmentIndex].
-			setRangeAndGetLastNumberInRange(lastRangeNumber);
-			var max=lastRangeNumber+1;
-			this._Representation[segmentIndex].setNumberID(segmentIndex);
-
-			//this part add new elements to the population
-			var aparitions=this._Representation[segmentIndex].getAparitions();
-			for(;aparitions>0;--aparitions){
-				var id=Math.floor(Math.random() * (max - min)) + min;
-				var elementA=new element(id);
-				this._Population.addElements(elementA);
-			}
-		}
-		this._Representation[this._Representation.length-1].setLastRangeNumber(equivalences.getBiggestNumber());
-		hashRepresentation.setRepresentation(this._Representation);
-		//set Distance-->also the highest distance of the population
-		this._Population.setDistance();
-		//set grade-->also the highest grade of the population
-		this._Population.setGrade();
-	},
-	countDifferentsWordAndFillRepresentation:function(){
-		//it counts how many different words are there in the text
-		//but also it fills the list of representation
-		this._ListOfWords.sort();
-		var wordIndex=this._ListOfWords.length-1;
-		var previousWord=""; 
-		for(;wordIndex>=0;--wordIndex){
-			if(this._ListOfWords[wordIndex]!=previousWord){
-				var DifferentWord=new representation(this._ListOfWords[wordIndex]);
-				previousWord=this._ListOfWords[wordIndex];
-				this._Representation.push(DifferentWord);
-				this._DifferentWords++;
-			}else{
-				this._Representation[this._Representation.length-1].increaseAparitions();
-			}
-		}
-	},
-	notIn:function(word,words){
-	  for(wordIndex=0;wordIndex<words.length;wordIndex++){
-	    if(words[wordsIndex]==word){
-	      return false;
-	    }
-	  }
-	  return true;
-	},
-	getTopTen:function(){
 		this._Population.setDistance();
 		this._Population.setGrade();
+		return this._Population.getActualGeneration();
+	},
+	//pasar a bits
+	crossover:function(){
+		var elementA;
+		var elementB;
+		var elementAID;
+		var elementBID;
+		var elementADistance;
+		var elementBDistance;
+		var elementAGrade;
+		var elementBGrade;
 		var elements=this._Population.getActualGeneration();
-		var wordsByEvaluation=[];
-		var words=[];
+		var min=0;
+		var max=elements.length;
+		var newElementsCounter=this._Population.getInitialElementsLenght()-max-1;
+		min=0;
+		max=equivalences.getBitsToUse();
+		var crossoverPoint;
+		for(;newElementsCounter>0;--newElementsCounter){
+			crossoverPoint=Math.floor(Math.random() * (max - min)) + min
+			elementA=this._Population.getRandomElement();
+			elementB=this._Population.getRandomElement();
+			
+			elementAID=elementA.getID();
+			elementBID=elementB.getID();
+
+			elementADistance=elementA.getDistance();
+			elementBDistance=elementB.getDistance();
+
+			elementAGrade=elementA.getGrade();
+			elementBGrade=elementB.getGrade();
+
+			var NewElement=new element(BitsOperations.cross(elementAID,elementBID,crossoverPoint));
+			NewElement.setGrade(BitsOperations.cross(elementAGrade,elementBGrade,crossoverPoint));
+			NewElement.setDistance(BitsOperations.cross(elementADistance,elementBDistance,crossoverPoint));
+			this._Population.addElements(NewElement); 
+		}
+	},
+	Mutation:function(){
+		//change the ID to string, and change a random bit of it
+		//toMutate is the 5% of the population.
+		var toMutate = this._Elements.length/100*95;
+		for(;toMutate>=0;toMutate--){
+			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
+			var temporalID = this._Elements[temporalElementIndex].getID();
+			var mutationPoint = 1;
+			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
+			temporalID = Math.floor(Math.abs(temporalID|=mutationPoint));
+			this._Elements[temporalElementIndex].setID(temporalID);
+		}
+	},
+	fitness:function(){
+		this.setMaxDistanceAndMaxGrade();
+		var elements=this._Population.getActualGeneration();
+		var elementsByEvaluation=[];
 		var elementIndex=0;
-		var wordTemp;
-		var distance;
-		var grade;
-		var evaluation;
-		var maxDistance=0;
-		var maxGrade=0;
-		var elementsBySegment=hashForElements.createHash(elements,"Segment");
-		var topTen=[];
-		for(elementIndex=0;elementIndex<=elementsBySegment.length-1;++elementIndex){
-			if(elementsBySegment[elementIndex]!=undefined){
-				wordTemp=new word(this._Representation[elementIndex].getWord());
-				var wordsIndex=0;
-				distance=elementsBySegment[elementIndex].length;
-				grade=elementsBySegment[elementIndex][0].getGrade();
-				//grade=0;
-				for(;wordsIndex<=elementsBySegment[elementIndex].length-1;++wordsIndex){
-					if(grade<elementsBySegment[elementIndex][wordsIndex].getGrade()){
-						grade=elementsBySegment[elementIndex][wordsIndex].getGrade();
-					}
-					//grade+=elementsBySegment[elementIndex][wordsIndex].getGrade();
-				}
-				wordTemp.setDistance(distance);
-				wordTemp.setGrade(grade);
-				//have to fix the total of aparitions
-				words.push(wordTemp);	
-				if(maxDistance<distance){
-					maxDistance=distance;
-				}
-				if(maxGrade<grade){
-					maxGrade=grade;
+		for(;elementIndex<=elements.length-1;++elementIndex){
+			var element=elements[elementIndex];
+			var evaluation=Math.floor(element.getDistance()*50/this._MaxDistance);
+			evaluation=evaluation+Math.floor(element.getGrade()*50/this._MaxGrade);
+			if(elementsByEvaluation[evaluation]!=undefined){
+				elementsByEvaluation[evaluation].push(element);
+			}else{
+				elementsByEvaluation[evaluation]=[element];
+			}
+		}
+		var elementsFitNumber=equivalences.getFitPorcentage()*elements.length;
+		elementsFitNumber=Math.floor(elementsFitNumber/100);
+		evaluationIndex=elementsByEvaluation.length-1;
+		var fitPopulation=[];
+		for(;evaluationIndex>=0 && elementsFitNumber>0;--evaluationIndex){
+			if(elementsByEvaluation[evaluationIndex]!=undefined){
+				for(elementIndex=elementsByEvaluation[evaluationIndex].length-1;
+					elementIndex>=0  && elementsFitNumber>0;--elementIndex){
+					fitPopulation.push(elementsByEvaluation[evaluationIndex][elementIndex]);
+					elementsFitNumber--;
 				}
 			}
 		}
-		//order the words by evaluation
-		words.sort(function(a,b){
-			return b.getEvaluation(maxDistance,maxGrade)-a.getEvaluation(maxDistance,maxGrade);
-		});
-		var topTenCounter=10;
-		var wordsIndex=0;
-		for(;topTenCounter>0;--topTenCounter,++wordsIndex){
-			topTen.push(words[wordsIndex])
+		this._Population.setActualGeneration(fitPopulation);
+	},
+	getNextGeneration:function(){
+		//filter with fitness to reduce the population
+		this.fitness();
+		this.crossover();
+	},
+	setMaxDistanceAndMaxGrade:function(){
+		var elementIndex=0;
+		elements=this._Population.getActualGeneration();
+		for(;elementIndex<=elements.length-1;++elementIndex){
+			var elementDistance=elements[elementIndex].getDistance();
+			var elementGrade=elements[elementIndex].getGrade();
+			if(elementDistance>this._MaxDistance){
+				this._MaxDistance=elementDistance;
+			}
+			if(elementGrade>this._MaxGrade){
+				this._MaxGrade=elementGrade;
+			}
 		}
-		return topTen;
 	},
 });

@@ -25,8 +25,8 @@ angular.module('wordsRelationGaApp')
         var ArrayOfWordsToAnalize=analize.selectZoneToAnalize();
         var ArrayOfAllTheText=analize.getTextArray();
         console.log(ArrayOfWordsToAnalize);
-        var ga=new GA(ArrayOfWordsToAnalize,ArrayOfAllTheText);
-        var words = ga.start();
+        var ProblemA=new Problem(ArrayOfWordsToAnalize,ArrayOfAllTheText);
+        var words = ProblemA.getTopTen();
         var threeJS = new ThreeJS();
         threeJS.start3D(words);
         
