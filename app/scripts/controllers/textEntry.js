@@ -14,9 +14,6 @@ angular.module('wordsRelationGaApp')
       'AngularJS',
       'Karma'
     ];
-    $scope.insertFromText=function(){
-    	alert("Hola mundo")
-    }
     $scope.analizeText=function(){
       var text=document.getElementById("textArea").value;
       var phrase=document.getElementById("phrase").value;
@@ -24,7 +21,6 @@ angular.module('wordsRelationGaApp')
         var analize=new Analizer(text,phrase);
         var ArrayOfWordsToAnalize=analize.selectZoneToAnalize();
         var ArrayOfAllTheText=analize.getTextArray();
-        console.log(ArrayOfWordsToAnalize);
         var ProblemA=new Problem(ArrayOfWordsToAnalize,ArrayOfAllTheText);
         var words = ProblemA.getTopTen();
         var threeJS = new ThreeJS(words);

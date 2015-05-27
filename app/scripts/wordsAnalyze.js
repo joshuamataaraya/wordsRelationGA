@@ -12,7 +12,7 @@ var Analizer =Class.extend({
 		this.cleanTextAndPhrase();
 		this.setInitialPhrasePos();
 		var zoneToAnalize=[]; //store the words to analize
-		var largeFromThePhrase=(this.text.length*equivalences.getWordsZonePorcentage())/100;
+		var largeFromThePhrase=(this.text.length*WORDS_ZONE_PORCENTAGE)/100;
 		var insertedCounter=largeFromThePhrase
 		var wordIndex=this.phraseInitialPos;
 		for(;insertedCounter>0 && wordIndex>=0;--insertedCounter,--wordIndex){

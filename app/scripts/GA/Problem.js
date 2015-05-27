@@ -26,7 +26,7 @@ Problem=Class.extend({
 	setDistanceRange:function(){
 		var elementsByAparitions=hashForElements.createHash(this._Representation,"Aparitions");
 		var aparitionsIndex=0;
-		var biggestNumber=equivalences.getBiggestNumber();
+		var biggestNumber=BIGGEST_NUMBER;
 		var numberByAparition=Math.floor(biggestNumber/this._Representation.length);
 		var lastRangeNumber=0;
 		for(;aparitionsIndex<elementsByAparitions.length;++aparitionsIndex){
@@ -48,7 +48,7 @@ Problem=Class.extend({
 	setGradeRange:function(){
 		var gradeIndex=0;
 		var elementsByGrade=hashForElements.createHash(this._Population.getActualGeneration(),"Grade");
-		var biggestNumber=equivalences.getBiggestNumber();
+		var biggestNumber=BIGGEST_NUMBER;
 		var numberByAparition=Math.floor(biggestNumber/this._Population.getActualGeneration().length);
 		var lastRangeNumber=0;
 		for(;gradeIndex<=elementsByGrade.length-1;++gradeIndex){

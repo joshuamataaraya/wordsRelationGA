@@ -104,6 +104,12 @@ var population=Class.extend({
 			}
 		}
 	},
+	mutate:function(){
+		var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
+		var temporalID = this._Elements[temporalElementIndex].getID();
+		temporalID = BitsOperations.mutate(temporalID);
+		this._Elements[temporalElementIndex].setID(temporalID);
+	},
 	getRandomElement:function(){
 		var min=0;
 		var max=this._Elements.length-1;

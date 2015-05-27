@@ -8,9 +8,9 @@ bitsOperations=Class.extend({
 		return Math.floor(Math.abs(NumA|=NumB));
 	},
 	mutate:function(pTemporalID){
-		var _mutationPoint = 1;
-		_mutationPoint <<= Math.floor(Math.random() * ((BITS_TO_USE-1)-1)) + 1;
-		return Math.floor(Math.abs(temporalID|=mutationPoint));
+		var mutationPoint = 1;
+		mutationPoint <<= Math.floor(Math.random() * ((BITS_TO_USE-1)-1)) + 1;
+		return Math.floor(Math.abs(pTemporalID|=mutationPoint));
 	}
 });
 BitsOperations=new bitsOperations();

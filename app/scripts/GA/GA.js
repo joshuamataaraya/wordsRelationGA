@@ -56,12 +56,9 @@ var GA=Class.extend({
 	Mutation:function(){
 		//change the ID to string, and change a random bit of it
 		//toMutate is the 5% of the population.
-		var toMutate = this._Elements.length/100*95;
+		var toMutate = this._Population.getActualGeneration().length/100*95;
 		for(;toMutate>=0;toMutate--){
-			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
-			var temporalID = this._Elements[temporalElementIndex].getID();
-			temporalID = BitsOperations.mutate(temporalID);
-			this._Elements[temporalElementIndex].setID(temporalID);
+			this._Population.mutate();
 		}
 	},
 	fitness:function(){
@@ -99,6 +96,7 @@ var GA=Class.extend({
 		//filter with fitness to reduce the population
 		this.fitness();
 		this.crossover();
+		//this.Mutation();
 	},
 	setMaxDistanceAndMaxGrade:function(){
 		var elementIndex=0;
