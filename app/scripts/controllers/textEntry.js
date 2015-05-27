@@ -27,8 +27,8 @@ angular.module('wordsRelationGaApp')
         console.log(ArrayOfWordsToAnalize);
         var ProblemA=new Problem(ArrayOfWordsToAnalize,ArrayOfAllTheText);
         var words = ProblemA.getTopTen();
-        var threeJS = new ThreeJS();
-        threeJS.start3D(words);
+        var threeJS = new ThreeJS(words);
+        threeJS.start3D();
         
         //here has to be the reference to the 3D draw page
       }

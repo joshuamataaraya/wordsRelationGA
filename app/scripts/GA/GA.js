@@ -65,9 +65,7 @@ var GA=Class.extend({
 		for(;toMutate>=0;toMutate--){
 			var temporalElementIndex = Math.floor(Math.random() * ((this._Elements.length-1)-0)) + 0;
 			var temporalID = this._Elements[temporalElementIndex].getID();
-			var mutationPoint = 1;
-			mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
-			temporalID = Math.floor(Math.abs(temporalID|=mutationPoint));
+			temporalID = BitsOperations.mutate(temporalID);
 			this._Elements[temporalElementIndex].setID(temporalID);
 		}
 	},
