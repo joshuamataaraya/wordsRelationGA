@@ -31,6 +31,33 @@ var population=Class.extend({
 	getInitialElementsLenght:function(){
 		return this._InitialElementsLenght;
 	},
+	setDistanceAndGrade:function(){
+		var elementIndex=0;
+		for (;elementIndex<=this._Elements.length-1;++elementIndex){
+			var element=this._Elements[elementIndex];
+			var distance=hashDistanceRepresentation.getSegment(element.getDistanceID());
+			element.setDistance(distance);
+			var grade=hashGradeRepresentation.getSegment(element.getGradeID());
+			element.setGrade(grade);
+		}
+	},
+	updateGradeAndDistanceIDS:function(argDistanceRepresentation,argGradeRepresentation){
+		var elementIndex=0;
+		var DistanceRepresentation=hashForElements.createHash(argDistanceRepresentation,"DistanceID");
+		var GradeRepresentation=hashForElements.createHash(argGradeRepresentation,"GradeID");
+		for (;elementIndex<=this._Elements.length-1;++elementIndex){
+			var element=this._Elements[elementIndex];
+			var min=DistanceRepresentation[element.getDistance()][0].getRange()[0];
+			var max=DistanceRepresentation[element.getDistance()][0].getRange()[1];
+			var distanceID=Math.floor(Math.random() * (max - min)) + min;
+			element.setDistanceID(distanceID);
+
+			min=GradeRepresentation[element.getGrade()][0].getRange()[0];
+			max=GradeRepresentation[element.getGrade()][0].getRange()[1];
+			var gradeID=Math.floor(Math.random() * (max - min)) + min;
+			element.setGradeID(gradeID);
+		}
+	},
 	setDistance:function(){
 		var elementsBySegment=hashForElements.createHash(this._Elements,"Segment");
 		var segmentIndex=0;

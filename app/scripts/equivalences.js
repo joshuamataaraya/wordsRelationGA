@@ -1,6 +1,6 @@
 var equivalences=Class.extend({
 	init:function(){
-		this._WordsZonePorcentage=5; //this is the porcentage of the zone to analize,
+		this._WordsZonePorcentage=20; //this is the porcentage of the zone to analize,
 							//it depends of the length of the file inserted.
 		this._ElementsNum=0;
 		this._bitsToUse=16;

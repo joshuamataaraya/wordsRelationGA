@@ -2,21 +2,70 @@ Problem=Class.extend({
 	init:function(argListOfWords,argArrayAllTheText){
 		this._ListOfWords=argListOfWords;
 		this._Representation=[];
+		this._DistanceRepresentation=[];
+		this._GradeRepresentation=[];
 		this._ListOfWords=argListOfWords;
 		equivalences.setWordsNum(this._ListOfWords.length);
-		this.setWordsRange();
 		this._ListOfTheText=argArrayAllTheText;
 		this._ListOfTheText.sort();
+		this._Population=new population();
+		this._Population.setDistance();
+		this._Population.setGrade();
+		this.setRanges();
 	},
-	setWordsRange:function(){
+	setRanges:function(){
 		this.fillRepresentation();
 		this.createSegmentsID();
+		this._Population.initializePopulation(this._Representation);
+		this.setDistanceRange();
+		this.setGradeRange();
+		//set an id to the distance and the grade
+		this._Population.updateGradeAndDistanceIDS(this._DistanceRepresentation,this._GradeRepresentation);
+
 	},
 	setDistanceRange:function(){
-
+		var elementsByAparitions=hashForElements.createHash(this._Representation,"Aparitions");
+		var aparitionsIndex=0;
+		var biggestNumber=equivalences.getBiggestNumber();
+		var numberByAparition=Math.floor(biggestNumber/this._Representation.length);
+		var lastRangeNumber=0;
+		for(;aparitionsIndex<elementsByAparitions.length;++aparitionsIndex){
+			if(elementsByAparitions[aparitionsIndex]!=undefined){
+				var distanceRepresentation=new Representation();
+				distanceRepresentation.setNumberID(aparitionsIndex);
+				var aparitions=elementsByAparitions[aparitionsIndex].length
+				distanceRepresentation.setAparitions(aparitions);
+				distanceRepresentation.setFirstRangeNumber(lastRangeNumber);
+				lastRangeNumber=lastRangeNumber+(aparitions*numberByAparition)-1;
+				distanceRepresentation.setLastRangeNumber(lastRangeNumber);
+				lastRangeNumber=lastRangeNumber+1;
+				this._DistanceRepresentation.push(distanceRepresentation);
+			}
+		}
+		this._DistanceRepresentation[this._DistanceRepresentation.length-1].setLastRangeNumber(biggestNumber);
+		hashDistanceRepresentation.setRepresentation(this._DistanceRepresentation);
 	},
 	setGradeRange:function(){
-
+		var gradeIndex=0;
+		var elementsByGrade=hashForElements.createHash(this._Population.getActualGeneration(),"Grade");
+		var biggestNumber=equivalences.getBiggestNumber();
+		var numberByAparition=Math.floor(biggestNumber/this._Population.getActualGeneration().length);
+		var lastRangeNumber=0;
+		for(;gradeIndex<=elementsByGrade.length-1;++gradeIndex){
+			if(elementsByGrade[gradeIndex]!=undefined){
+				var gradeRepresentation=new Representation();
+				gradeRepresentation.setNumberID(elementsByGrade[gradeIndex][0].getGrade());
+				var aparitions=elementsByGrade[gradeIndex].length
+				gradeRepresentation.setAparitions(aparitions);
+				gradeRepresentation.setFirstRangeNumber(lastRangeNumber);
+				lastRangeNumber=lastRangeNumber+(aparitions*numberByAparition)-1;
+				gradeRepresentation.setLastRangeNumber(lastRangeNumber);
+				lastRangeNumber=lastRangeNumber+1;
+				this._GradeRepresentation.push(gradeRepresentation);
+			}
+		}
+		this._GradeRepresentation[this._GradeRepresentation.length-1].setLastRangeNumber(biggestNumber);
+		hashGradeRepresentation.setRepresentation(this._GradeRepresentation);
 	},
 	fillRepresentation:function(){
 		//it fills the list of representation
@@ -47,7 +96,7 @@ Problem=Class.extend({
 		hashRepresentation.setRepresentation(this._Representation);
 	},
 	getTopTen:function(){
-		var ga=new GA(this._Representation);
+		var ga=new GA(this._Population);
 		var elements=ga.start();
 		var wordsByEvaluation=[];
 		var words=[];

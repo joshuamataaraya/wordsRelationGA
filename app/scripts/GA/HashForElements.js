@@ -7,10 +7,30 @@ HashForElements=Class.extend({
 						element.getID());
 				};
 				break;
+			case "DistanceID":
+				var criteriaFunction=function(element){
+					return element.getID();
+				};
+				break;
+			case "GradeID":
+				var criteriaFunction=function(element){
+					return element.getID();
+				};
+				break;
 			case "Distance":
 				var criteriaFunction=function(element){
 					return element.getDistance();
 				};
+				break;
+			case "Aparitions":
+				var criteriaFunction=function(element){
+					return element.getAparitions();
+				}
+				break;
+			case "Grade":
+				var criteriaFunction=function(element){
+					return element.getGrade();
+				}
 				break;
 		}
 		var elementsByCriteria=[];

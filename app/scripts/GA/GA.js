@@ -1,16 +1,12 @@
 var GA=Class.extend({
-	init:function(argRepresentation){
-		this._Representation=argRepresentation;
-		this._Population=new population();
-		this._Population.setDistance();
-		this._Population.setGrade();
+	init:function(argPopulation){
+		this._Population=argPopulation;
 		this._MaxDistance=0;
 		this._MaxGrade=0;
 		//set genetic representation
 	},
 	start:function(){
 		//generate n generations
-		this._Population.initializePopulation(this._Representation);
 		var generations=equivalences.getNumberOfGenerations();
 		while(generations>0){
 			this.getNextGeneration();
@@ -21,7 +17,6 @@ var GA=Class.extend({
 		this._Population.setGrade();
 		return this._Population.getActualGeneration();
 	},
-	//pasar a bits
 	crossover:function(){
 		var elementA;
 		var elementB;
@@ -46,11 +41,11 @@ var GA=Class.extend({
 			elementAID=elementA.getID();
 			elementBID=elementB.getID();
 
-			elementADistance=elementA.getDistance();
-			elementBDistance=elementB.getDistance();
+			elementADistance=elementA.getDistanceID();
+			elementBDistance=elementB.getDistanceID();
 
-			elementAGrade=elementA.getGrade();
-			elementBGrade=elementB.getGrade();
+			elementAGrade=elementA.getGradeID();
+			elementBGrade=elementB.getGradeID();
 
 			var NewElement=new element(BitsOperations.cross(elementAID,elementBID,crossoverPoint));
 			NewElement.setGrade(BitsOperations.cross(elementAGrade,elementBGrade,crossoverPoint));
@@ -72,6 +67,7 @@ var GA=Class.extend({
 		}
 	},
 	fitness:function(){
+		this._Population.setDistanceAndGrade();
 		this.setMaxDistanceAndMaxGrade();
 		var elements=this._Population.getActualGeneration();
 		var elementsByEvaluation=[];
@@ -120,4 +116,7 @@ var GA=Class.extend({
 			}
 		}
 	},
+	getPopulation:function(){
+		return this._Population.getActualGeneration();
+	}
 });

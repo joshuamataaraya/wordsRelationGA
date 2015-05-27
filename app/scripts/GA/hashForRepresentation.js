@@ -38,3 +38,5 @@ var hashForRepresentation=Class.extend({
 	}
 });
 var hashRepresentation=new hashForRepresentation(); //its a global hash table.
+var hashGradeRepresentation=new hashForRepresentation();
+var hashDistanceRepresentation=new hashForRepresentation();
