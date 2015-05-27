@@ -1,30 +1,8 @@
 var _Controls, _Camera, _Renderer, _Scene;
 var ThreeJS=Class.extend({
-	init:function(){
-		this._CameraFOV = 75;
-		this._CameraViewDistance = 2000;
-		this._CameraZPosition = 300;
-		this._RendererClearColor = 0xffffff;
-		this._SceneLength = 600;
-		this._HalfSceneLength = 300;
-		this._BoxDepth = 500;
-		this._HalfBoxDepth = 250;
-		this._BoxColor = 0x123456;
-		this._LightColor = 0x404040;
-		this._LightZDistance = 100;
-		this._LightIntensity = 10;
-		this._ColorList = [0x888888,0xff0000,0x880000,0xffff00,0x00ff00,0x008800,0x00ffff,0x0000ff,0x000088,0x000000];
-		this._WordList = [];
-		this._AvgWeight = (this._SceneLength)/9;
-		this._AvgDistance = (this._SceneLength)/9;
-		this._AvgTotalDistance = (500)/9;
-		this._CurveSegment = 15;
-		this._Font = "helvetiker";
-		this._3dContainer = "threejs";
-		this._TextEntry = "textEntry";
-		this._SizeMultiplier = 5;
-		this._BaseSize = 15;
-		this._BaseHeight = 2;
+	init:function(pWordArray){
+		this._WordList = pWordArray;
+		this._Container = document.getElementById(TEXT_ENTRY_CONTAINER);
 	},
 	animate: function(){
 		_Controls.update();
@@ -32,24 +10,24 @@ var ThreeJS=Class.extend({
 
 	//Crea la escena, camara y el renderizador que se usara para la demostración en 3D.
 	prepare3D: function(){
-		this._Container = document.getElementById(this._3dContainer);
+		this._Container = document.getElementById(THREED_CONTAINER);
 		if (!Detector.webgl) Detector.addGetWebGLMessage();
-		_Camera = new THREE.PerspectiveCamera(this._CameraFOV, this._SceneLength / this._SceneLength, 1, this._CameraViewDistance);
-		_Camera.position.set(0,0,this._CameraZPosition);
+		_Camera = new THREE.PerspectiveCamera(CAMERA_FOV, SCENE_LENGTH / SCENE_LENGTH, 1, CAMERA_VIEW_DISTANCE);
+		_Camera.position.set(0,0,CAMERA_Z_POSITION);
 		_Scene = new THREE.Scene();
 		_Renderer = new THREE.WebGLRenderer({antialias: false});
-		_Renderer.setClearColor(this._RendererClearColor);
+		_Renderer.setClearColor(RENDERER_CLEAR_COLOR);
 		_Renderer.setPixelRatio(window.devicePixelRatio);
-		_Renderer.setSize(this._SceneLength,this._SceneLength);
+		_Renderer.setSize(SCENE_LENGTH,SCENE_LENGTH);
 		this._Container.appendChild(_Renderer.domElement);
 		_Controls = new THREE.OrbitControls(_Camera);
 		_Controls.addEventListener('change', this.render);
-		var _geometry = new THREE.BoxGeometry(this._SceneLength, this._SceneLength, this._BoxDepth);
-		var _material = new THREE.MeshLambertMaterial({color: this._BoxColor, side: THREE.BackSide, vertexColors: THREE.VertexColors});
+		var _geometry = new THREE.BoxGeometry(SCENE_LENGTH, SCENE_LENGTH, BOX_DEPTH);
+		var _material = new THREE.MeshLambertMaterial({color: BOX_COLOR, side: THREE.BackSide, vertexColors: THREE.VertexColors});
 		var _cube = new THREE.Mesh(_geometry, _material);
 		_Scene.add(_cube);
-		var _light = new THREE.PointLight(this._LightColor, this._LightIntensity, 0);
-		_light.position.set(0,0,this._LightZDistance);
+		var _light = new THREE.PointLight(LIGHT_COLOR, LIGHT_INTENSITY, 0);
+		_light.position.set(0,0,LIGHT_Z_POSITION);
 		_Scene.add(_light);
 	},
 
@@ -58,26 +36,26 @@ var ThreeJS=Class.extend({
 		var _word = pWord;
 		var _theText = _word.getWord();
 		var _text3d = new THREE.TextGeometry(_theText,{
-			size: (this._SizeMultiplier*_word.getGrade())+this._BaseSize,
-			height: _word.getGrade()+this._BaseHeight,
-			curveSegments: this._CurveSegment,
-			font: this._Font	
+			size: (SIZE_MULTIPLIER*_word.getGrade())+BASE_SIZE,
+			height: _word.getGrade()+BASE_HEIGHT,
+			curveSegments: CURVE_SEGMENT,
+			font: FONT
 		});
 		var _material = new THREE.MeshBasicMaterial({color: pColor});
 		var _newText = new THREE.Mesh(_text3d, _material);
-		_newText.position.x = _word.getDistance()*this._AvgDistance-this._HalfSceneLength;
-		_newText.position.y = _word.getGrade()*this._AvgWeight-this._HalfSceneLength;
-		_newText.position.z = _word.getTotalDistance()*this._AvgTotalDistance-this._HalfBoxDepth;
+		_newText.position.x = _word.getDistance()*AVG_DISTANCE-HALF_SCENE_LENGTH;
+		_newText.position.y = _word.getGrade()*AVG_WEIGHT-HALF_SCENE_LENGTH;
+		_newText.position.z = _word.getTotalDistance()*AVG_TOTAL_DISTANCE-HALF_BOX_DEPTH;
 		var _boundingVector = new THREE.Box3().setFromObject(_newText);
 		var _boundingArray = _boundingVector.max.toArray();
-		if(_boundingArray[0]>this._HalfSceneLength){
-			_newText.position.x-= (_boundingArray[0]-this._HalfSceneLength);
+		if(_boundingArray[0]>HALF_SCENE_LENGTH){
+			_newText.position.x-= (_boundingArray[0]-HALF_SCENE_LENGTH);
 		}
-		if(_boundingArray[1]>this._HalfSceneLength){
-			_newText.position.y -= (_boundingArray[1]-this._HalfSceneLength);
+		if(_boundingArray[1]>HALF_SCENE_LENGTH){
+			_newText.position.y -= (_boundingArray[1]-HALF_SCENE_LENGTH);
 		}
-		if(_boundingArray[2]>this._HalfBoxDepth){
-			_newText.position.z -= (_boundingArray[2]-this._HalfBoxDepth);
+		if(_boundingArray[2]>HALF_SCENE_LENGTH){
+			_newText.position.z -= (_boundingArray[2]-HALF_SCENE_LENGTH);
 		}
 		_Scene.add(_newText);
 	},
@@ -85,7 +63,7 @@ var ThreeJS=Class.extend({
 	//Ciclo que va agregando las palabras de la lista a la escena.
 	addWords: function(){
 		for(var _currentWord=0; _currentWord<this._WordList.length; _currentWord++){
-			this.insertWord(this._WordList[_currentWord],this._ColorList[_currentWord]);
+			this.insertWord(this._WordList[_currentWord],COLOR_LIST[_currentWord]);
 		}
 	},
 
@@ -119,10 +97,8 @@ var ThreeJS=Class.extend({
 	},
 
 	//Funcion que se llama para que se muestre el 3D, la entrada es la lista de las 10 palabras.
-	start3D: function(pWordArray){
-		this._Container = document.getElementById(this._TextEntry);
+	start3D: function(){
 		this._Container.parentNode.removeChild(this._Container);
-		this._WordList = pWordArray;
 		this.prepare3D();
 		this.prepareWords();
 		this.animate();

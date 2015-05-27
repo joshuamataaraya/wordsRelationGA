@@ -16,7 +16,7 @@ var Representation=Class.extend({
 	},
 	setRangeAndGetLastNumberInRange:function(argLastNumerInRange){
 		this._Range[0]=argLastNumerInRange;
-		this._Range[1]=argLastNumerInRange+(this._Aparitions*equivalences.getSizePerElement())-1;
+		this._Range[1]=argLastNumerInRange+(this._Aparitions*(Math.floor(BIGGEST_NUMBER/ELEMENTS_NUM)))-1;
 		return this._Range[1]+1;
 	},
 	setFirstRangeNumber:function(argLastNumberOfRange){

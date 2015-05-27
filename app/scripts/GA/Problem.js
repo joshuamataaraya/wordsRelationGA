@@ -5,7 +5,7 @@ Problem=Class.extend({
 		this._DistanceRepresentation=[];
 		this._GradeRepresentation=[];
 		this._ListOfWords=argListOfWords;
-		equivalences.setWordsNum(this._ListOfWords.length);
+		ELEMENTS_NUM = this._ListOfWords.length;
 		this._ListOfTheText=argArrayAllTheText;
 		this._ListOfTheText.sort();
 		this._Population=new population();
@@ -92,7 +92,7 @@ Problem=Class.extend({
 			lastRangeNumber=this._Representation[segmentIndex].setRangeAndGetLastNumberInRange(lastRangeNumber);
 			this._Representation[segmentIndex].setNumberID(segmentIndex);
 		}
-		this._Representation[this._Representation.length-1].setLastRangeNumber(equivalences.getBiggestNumber());
+		this._Representation[this._Representation.length-1].setLastRangeNumber(BIGGEST_NUMBER);
 		hashRepresentation.setRepresentation(this._Representation);
 	},
 	getTopTen:function(){

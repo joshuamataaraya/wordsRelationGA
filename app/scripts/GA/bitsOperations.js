@@ -7,5 +7,10 @@ bitsOperations=Class.extend({
 		NumB <<=crossoverPoint;
 		return Math.floor(Math.abs(NumA|=NumB));
 	},
+	mutate:function(pTemporalID){
+		var _mutationPoint = 1;
+		_mutationPoint <<= Math.floor(Math.random() * ((BITS_TO_USE-1)-1)) + 1;
+		return Math.floor(Math.abs(temporalID|=mutationPoint));
+	}
 });
 BitsOperations=new bitsOperations();
