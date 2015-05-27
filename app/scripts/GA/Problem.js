@@ -3,7 +3,7 @@ Problem=Class.extend({
 		this._ListOfWords=argListOfWords;
 		this._Representation=[];
 		this._ListOfWords=argListOfWords;
-		equivalences.setWordsNum(this._ListOfWords.length);
+		ELEMENTS_NUM = this._ListOfWords.length;
 		this.setWordsRange();
 		this._ListOfTheText=argArrayAllTheText;
 		this._ListOfTheText.sort();
