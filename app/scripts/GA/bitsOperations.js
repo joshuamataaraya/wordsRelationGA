@@ -9,7 +9,7 @@ bitsOperations=Class.extend({
 	},
 	mutate:function(pTemporalID){
 		var _mutationPoint = 1;
-		_mutationPoint <<= Math.floor(Math.random() * ((equivalences.getBitsToUse()-1)-1)) + 1;
+		_mutationPoint <<= Math.floor(Math.random() * ((BITS_TO_USE-1)-1)) + 1;
 		return Math.floor(Math.abs(temporalID|=mutationPoint));
 	}
 });

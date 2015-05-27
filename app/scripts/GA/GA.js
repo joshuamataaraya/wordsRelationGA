@@ -11,7 +11,7 @@ var GA=Class.extend({
 	start:function(){
 		//generate n generations
 		this._Population.initializePopulation(this._Representation);
-		var generations=equivalences.getNumberOfGenerations();
+		var generations=NUMBER_OF_GENERATIONS;
 		while(generations>0){
 			this.getNextGeneration();
 			generations--;
@@ -36,7 +36,7 @@ var GA=Class.extend({
 		var max=elements.length;
 		var newElementsCounter=this._Population.getInitialElementsLenght()-max-1;
 		min=0;
-		max=equivalences.getBitsToUse();
+		max=BITS_TO_USE;
 		var crossoverPoint;
 		for(;newElementsCounter>0;--newElementsCounter){
 			crossoverPoint=Math.floor(Math.random() * (max - min)) + min
@@ -84,7 +84,7 @@ var GA=Class.extend({
 				elementsByEvaluation[evaluation]=[element];
 			}
 		}
-		var elementsFitNumber=equivalences.getFitPorcentage()*elements.length;
+		var elementsFitNumber=FIT_PORCENTAGE*elements.length;
 		elementsFitNumber=Math.floor(elementsFitNumber/100);
 		evaluationIndex=elementsByEvaluation.length-1;
 		var fitPopulation=[];
